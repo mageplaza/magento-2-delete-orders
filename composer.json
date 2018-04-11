@@ -1,0 +1,25 @@
+{
+  "name": "mageplaza/module-delete-order",
+  "description": "",
+  "require": {
+    "mageplaza/module-core": "*"
+  },
+  "type": "magento2-module",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "Mageplaza",
+      "email": "hi@mageplaza.com",
+      "homepage": "https://www.mageplaza.com",
+      "role": "Leader"
+    }
+  ],
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "Mageplaza\\DeleteOrder\\": ""
+    }
+  }
+}

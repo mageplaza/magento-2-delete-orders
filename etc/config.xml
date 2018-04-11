@@ -1,0 +1,10 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <deleteorder>
+            <general>
+                <is_enabled>1</is_enabled>
+            </general>
+        </deleteorder>
+    </default>
+</config>

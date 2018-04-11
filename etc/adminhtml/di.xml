@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!--<preference for="Magento\Framework\Model\AbstractModel" type="Ibnab\DeleteOrder\Model\NormalModel" />-->
+    <type name="Mageplaza\DeleteOrder\Controller\Adminhtml\Order\MassDelete">
+        <arguments>
+            <argument name="deleteAction" xsi:type="array">
+                <item name="context" xsi:type="string">Magento\Backend\App\Action\Context</item>
+                <item name="resource" xsi:type="string">Magento\Framework\App\ResourceConnection</item>
+                <item name="filter" xsi:type="string">Magento\Ui\Component\MassAction\Filter</item>
+                <item name="collection" xsi:type="string">Magento\Sales\Model\ResourceModel\Order\CollectionFactory</item>
+            </argument>
+        </arguments>
+    </type>
+
+</config>
