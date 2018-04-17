@@ -36,7 +36,7 @@ A: Read solution: https://github.com/mageplaza/module-core/issues/3
 Run the following command in Magento 2 root folder:
 
 ```
-composer require mageplaza/magento-2-blog-extension
+composer require mageplaza/module-delete-order
 php bin/magento setup:upgrade
 php bin/magento setup:static-content:deploy
 ```
