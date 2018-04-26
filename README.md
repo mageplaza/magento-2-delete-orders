@@ -1,6 +1,6 @@
 # Magento 2 Delete Orders free by Mageplaza
 
-**Mageplaza Delete Orders for Magento 2** helps admins completely remove unnecessary orders, invoices, shipments and credit memos which are arised during testing process. This helps simplify order management and get these arranged neater.
+**Magento 2 Delete Orders** by Mageplaza helps admins completely remove unnecessary orders, invoices, shipments and credit memos which are arised during testing process. This helps simplify order management and get these arranged neater.
 
 
 ## Highlight features
