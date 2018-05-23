@@ -10,7 +10,6 @@ use Magento\Sales\Controller\Adminhtml\Order\AbstractMassAction;
 use Magento\Sales\Model\OrderRepository;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Sales\Model\ResourceModel\Grid;
-use Mageplaza\DeleteOrder\Helper\Data as DataHelper;
 
 
 class Delete extends AbstractMassAction
@@ -27,18 +26,18 @@ class Delete extends AbstractMassAction
         Context $context,
         Filter $filter,
         CollectionFactory $collectionFactory,
-        OrderRepository $orderRepository,
-        DataHelper $dataHelper
+        OrderRepository $orderRepository
     ) {
         parent::__construct($context, $filter);
         $this->collectionFactory    = $collectionFactory;
         $this->orderRepository      = $orderRepository;
-        $this->helper               = $dataHelper;
     }
 
     protected function massAction(DbAC $collection)
     {
-        if ($this->helper->isEnabled()) {
+        $objectManager     = \Magento\Framework\App\ObjectManager::getInstance();
+        $helper        = $objectManager->get('Mageplaza\DeleteOrder\Helper\Data');
+        if ($helper->isEnabled()) {
             $orderDeleted = 0;
             foreach ($collection as $order) {
                 $this->orderRepository->deleteById($order->getId());
