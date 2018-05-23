@@ -4,9 +4,9 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the mageplaza.com license that is
+ * This source file is subject to the Mageplaza.com license that is
  * available through the world-wide-web at this URL:
- * https://mageplaza.com/LICENSE.txt
+ * https://www.mageplaza.com/LICENSE.txt
  *
  * DISCLAIMER
  *
@@ -15,9 +15,10 @@
  *
  * @category    Mageplaza
  * @package     Mageplaza_DeleteOrder
- * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
- * @license     http://mageplaza.com/LICENSE.txt
+ * @copyright   Copyright (c) Mageplaza (http://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
  */
+
 namespace Mageplaza\DeleteOrder\Controller\Adminhtml\Order;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection as DbAC;
@@ -27,7 +28,7 @@ use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Sales\Controller\Adminhtml\Order\AbstractMassAction;
 use Magento\Sales\Model\OrderRepository;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Sales\Model\ResourceModel\Grid;
+use Mageplaza\DeleteOrder\Helper\Data as DataHelper;
 
 
 class Delete extends AbstractMassAction
@@ -44,18 +45,18 @@ class Delete extends AbstractMassAction
         Context $context,
         Filter $filter,
         CollectionFactory $collectionFactory,
-        OrderRepository $orderRepository
+        OrderRepository $orderRepository,
+        DataHelper $dataHelper
     ) {
         parent::__construct($context, $filter);
         $this->collectionFactory    = $collectionFactory;
         $this->orderRepository      = $orderRepository;
+        $this->helper               = $dataHelper;
     }
 
     protected function massAction(DbAC $collection)
     {
-        $objectManager     = \Magento\Framework\App\ObjectManager::getInstance();
-        $helper        = $objectManager->get('Mageplaza\DeleteOrder\Helper\Data');
-        if ($helper->isEnabled()) {
+        if ($this->helper->isEnabled()) {
             $orderDeleted = 0;
             foreach ($collection as $order) {
                 $this->orderRepository->deleteById($order->getId());
