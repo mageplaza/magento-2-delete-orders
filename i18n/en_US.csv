@@ -1,4 +1,11 @@
-"Delete Order","Delete Order"
-"Delete Order module is Disabled","Delete Order module is Disabled"
-"Enable","Enable"
-"General","General"
+"Cannot delete the order.","Cannot delete the order."
+"The order has been deleted.","The order has been deleted."
+"An error occurred while deleting the order. Please try again later.","An error occurred while deleting the order. Please try again later."
+"Cannot delete order #%1. Please try again later.","Cannot delete order #%1. Please try again later."
+"A total of %1 order(s) has been deleted.","A total of %1 order(s) has been deleted."
+Delete,Delete
+"Are you sure you want to delete this order?","Are you sure you want to delete this order?"
+"Delete Orders","Delete Orders"
+General,General
+Enable,Enable
+"Do you really want to delete this orders?","Do you really want to delete this orders?"

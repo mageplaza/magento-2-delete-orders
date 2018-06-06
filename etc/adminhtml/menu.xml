@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
-    <menu>
-        <add id="Mageplaza_DeleteOrder::deleteorder" title="Delete Order" module="Mageplaza_DeleteOrder" sortOrder="100" resource="Mageplaza_DeleteOrder::deleteorder" parent="Mageplaza_Core::menu"/>
-        <add id="Mageplaza_DeleteOrder::configuration" title="Configuration" module="Mageplaza_DeleteOrder" sortOrder="10" action="adminhtml/system_config/edit/section/deleteorder" resource="Mageplaza_DeleteOrder::configuration" parent="Mageplaza_DeleteOrder::deleteorder"/>
-    </menu>
-</config>

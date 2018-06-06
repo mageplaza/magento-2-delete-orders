@@ -1,15 +1,30 @@
 <?xml version="1.0"?>
+<!--
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_DeleteOrders
+ * @copyright   Copyright (c) Mageplaza (http://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+-->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <!--<preference for="Magento\Framework\Model\AbstractModel" type="Ibnab\DeleteOrder\Model\NormalModel" />-->
-    <type name="Mageplaza\DeleteOrder\Controller\Adminhtml\Order\MassDelete">
-        <arguments>
-            <argument name="deleteAction" xsi:type="array">
-                <item name="context" xsi:type="string">Magento\Backend\App\Action\Context</item>
-                <item name="resource" xsi:type="string">Magento\Framework\App\ResourceConnection</item>
-                <item name="filter" xsi:type="string">Magento\Ui\Component\MassAction\Filter</item>
-                <item name="collection" xsi:type="string">Magento\Sales\Model\ResourceModel\Order\CollectionFactory</item>
-            </argument>
-        </arguments>
+    <type name="Magento\Sales\Block\Adminhtml\Order\View">
+        <plugin name="delete_order_add_button_delete" type="Mageplaza\DeleteOrders\Plugin\Order\AddDeleteButton"/>
     </type>
-
+    <type name="Magento\Ui\Component\MassAction">
+        <plugin name="delete_order_add_massaction_delete" type="Mageplaza\DeleteOrders\Plugin\Order\AddDeleteAction"/>
+    </type>
 </config>

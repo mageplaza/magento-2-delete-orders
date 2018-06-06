@@ -14,22 +14,20 @@
  * version in the future.
  *
  * @category    Mageplaza
- * @package     Mageplaza_DeleteOrder
+ * @package     Mageplaza_DeleteOrders
  * @copyright   Copyright (c) Mageplaza (http://www.mageplaza.com/)
  * @license     https://www.mageplaza.com/LICENSE.txt
  */
 
-namespace Mageplaza\DeleteOrder\Helper;
+namespace Mageplaza\DeleteOrders\Helper;
 
 use Mageplaza\Core\Helper\AbstractData;
 
+/**
+ * Class Data
+ * @package Mageplaza\DeleteOrders\Helper
+ */
 class Data extends AbstractData
 {
-    const XML_PATH_GENERAL_ENABLED = 'deleteorder/general/is_enabled';
-
-    public function isEnabled($storeId = null)
-    {
-        return $this->getConfigValue(self::XML_PATH_GENERAL_ENABLED, $storeId);
-
-    }
+    const CONFIG_MODULE_PATH = 'delete_orders';
 }

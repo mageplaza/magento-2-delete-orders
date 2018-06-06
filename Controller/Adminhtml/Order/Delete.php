@@ -14,66 +14,60 @@
  * version in the future.
  *
  * @category    Mageplaza
- * @package     Mageplaza_DeleteOrder
+ * @package     Mageplaza_DeleteOrders
  * @copyright   Copyright (c) Mageplaza (http://www.mageplaza.com/)
  * @license     https://www.mageplaza.com/LICENSE.txt
  */
 
-namespace Mageplaza\DeleteOrder\Controller\Adminhtml\Order;
+namespace Mageplaza\DeleteOrders\Controller\Adminhtml\Order;
 
-use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection as DbAC;
-use Magento\Backend\App\Action\Context;
-use Magento\Ui\Component\MassAction\Filter;
-use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
-use Magento\Sales\Controller\Adminhtml\Order\AbstractMassAction;
-use Magento\Sales\Model\OrderRepository;
-use Magento\Framework\Controller\ResultFactory;
-use Mageplaza\DeleteOrder\Helper\Data as DataHelper;
+use Magento\Sales\Controller\Adminhtml\Order;
+use Mageplaza\DeleteOrders\Helper\Data;
 
-
-class Delete extends AbstractMassAction
+/**
+ * Class Delete
+ * @package Mageplaza\DeleteOrders\Controller\Adminhtml\Order
+ */
+class Delete extends Order
 {
-    protected $orderRepository;
-    protected $helper;
+    /**
+     * Authorization level of a basic admin session
+     *
+     * @see _isAllowed()
+     */
+    const ADMIN_RESOURCE = 'Magento_Sales::delete';
 
     /**
-     * @param Context           $context
-     * @param Filter            $filter
-     * @param CollectionFactory $collectionFactory
+     * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
      */
-    public function __construct(
-        Context $context,
-        Filter $filter,
-        CollectionFactory $collectionFactory,
-        OrderRepository $orderRepository,
-        DataHelper $dataHelper
-    ) {
-        parent::__construct($context, $filter);
-        $this->collectionFactory    = $collectionFactory;
-        $this->orderRepository      = $orderRepository;
-        $this->helper               = $dataHelper;
-    }
-
-    protected function massAction(DbAC $collection)
+    public function execute()
     {
-        if ($this->helper->isEnabled()) {
-            $orderDeleted = 0;
-            foreach ($collection as $order) {
-                $this->orderRepository->deleteById($order->getId());
-                $orderDeleted++;
-            }
-            if ($orderDeleted) {
-                $this->messageManager->addSuccess(__('A total of %1 record(s) were deleted.', $orderDeleted));
-            }
-        } else {
-            $this->messageManager->addError(__('Delete Order module is Disabled'));
+        $resultRedirect = $this->resultRedirectFactory->create();
+
+        $helper = $this->_objectManager->get(Data::class);
+        if (!$helper->isEnabled() || !$this->isValidPostRequest()) {
+            $this->messageManager->addError(__('Cannot delete the order.'));
+
+            return $resultRedirect->setPath('sales/order/view', ['order_id' => $this->getRequest()->getParam('order_id')]);
         }
 
-        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
-        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        $resultRedirect->setPath($this->getComponentRefererUrl());
+        $order = $this->_initOrder();
+        if ($order) {
+            try {
+                $this->orderRepository->delete($order);
+                $this->messageManager->addSuccessMessage(__('The order has been deleted.'));
+            } catch (\Magento\Framework\Exception\LocalizedException $e) {
+                $this->messageManager->addErrorMessage($e->getMessage());
 
-        return $resultRedirect;
+                return $resultRedirect->setPath('sales/order/view', ['order_id' => $order->getId()]);
+            } catch (\Exception $e) {
+                $this->messageManager->addErrorMessage(__('An error occurred while deleting the order. Please try again later.'));
+                $this->_objectManager->get('Psr\Log\LoggerInterface')->critical($e);
+
+                return $resultRedirect->setPath('sales/order/view', ['order_id' => $order->getId()]);
+            }
+        }
+
+        return $resultRedirect->setPath('sales/*/');
     }
-
 }
