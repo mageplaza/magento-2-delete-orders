@@ -13,8 +13,8 @@
  * Do not edit or add to this file if you wish to upgrade this extension to newer
  * version in the future.
  *
- * @category   Mageplaza
- * @package    Mageplaza_DeleteOrder
+ * @category    Mageplaza
+ * @package     Mageplaza_DeleteOrder
  * @copyright   Copyright (c) Mageplaza (http://www.mageplaza.com/)
  * @license     https://www.mageplaza.com/LICENSE.txt
  */
@@ -71,8 +71,7 @@ class AddDeleteButton
                     'class'          => 'delete',
                     'id'             => 'order-view-delete-button',
                     'data_attribute' => [
-                        'url'     => $object->getDeleteUrl(),
-                        'message' => __('Are you sure you want to delete this order?')
+                        'url'     => $object->getDeleteUrl()
                     ]
                 ]);
         }
@@ -88,17 +87,17 @@ class AddDeleteButton
     public function afterGetFormScripts(View $object, $result)
     {
         if ($this->helper->isEnabled() && $this->_authorization->isAllowed('Magento_Sales::delete')) {
+            $message = __('Are you sure you want to delete this order?');
             $result .= <<<SCRIPT
 <script type="text/javascript">
     require(['jquery', 'Magento_Ui/js/modal/confirm'], function ($, confirm) {
         'use strict';
     
         $('#order-view-delete-button').click(function () {
-            var msg = $(this).data('message'),
-                url = $(this).data('url');
+            var url = $(this).data('url');
     
             confirm({
-                'content': msg,
+                'content': '$message',
                 'actions': {
                     confirm: function () {
                         $('<form>', {'action': url, 'method': 'POST'})
