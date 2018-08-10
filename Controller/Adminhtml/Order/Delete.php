@@ -54,6 +54,7 @@ class Delete extends Order
         $order = $this->_initOrder();
         if ($order) {
             try {
+                $helper->deleteRelatedOrderData($order);
                 $this->orderRepository->delete($order);
                 $this->messageManager->addSuccessMessage(__('The order has been deleted.'));
             } catch (\Magento\Framework\Exception\LocalizedException $e) {

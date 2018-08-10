@@ -88,6 +88,7 @@ class MassDelete extends AbstractMassAction
             /** @var \Magento\Sales\Api\Data\OrderInterface $order */
             foreach ($collection->getItems() as $order) {
                 try {
+                    $this->helper->deleteRelatedOrderData($order);
                     $this->orderRepository->delete($order);
                     $deleted++;
                 } catch (\Exception $e) {
