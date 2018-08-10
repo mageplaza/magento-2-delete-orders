@@ -64,57 +64,17 @@ class AddDeleteButton
     public function beforeSetLayout(View $object, LayoutInterface $layout)
     {
         if ($this->helper->isEnabled() && $this->_authorization->isAllowed('Magento_Sales::delete')) {
+            $message = __('Are you sure you want to delete this order?');
             $object->addButton(
                 'order_delete',
                 [
                     'label'          => __('Delete'),
                     'class'          => 'delete',
                     'id'             => 'order-view-delete-button',
-                    'data_attribute' => [
-                        'url'     => $object->getDeleteUrl()
-                    ]
+                    'onclick' => "confirmSetLocation('{$message}', '{$object->getDeleteUrl()}')"
                 ]);
         }
 
         return [$layout];
-    }
-
-    /**
-     * @param View $object
-     * @param $result
-     * @return string
-     */
-    public function afterGetFormScripts(View $object, $result)
-    {
-        if ($this->helper->isEnabled() && $this->_authorization->isAllowed('Magento_Sales::delete')) {
-            $message = __('Are you sure you want to delete this order?');
-            $result .= <<<SCRIPT
-<script type="text/javascript">
-    require(['jquery', 'Magento_Ui/js/modal/confirm'], function ($, confirm) {
-        'use strict';
-    
-        $('#order-view-delete-button').click(function () {
-            var url = $(this).data('url');
-    
-            confirm({
-                'content': '$message',
-                'actions': {
-                    confirm: function () {
-                        $('<form>', {'action': url, 'method': 'POST'})
-                        .append($('<input>', {'name': 'form_key', 'value': window.FORM_KEY, 'type': 'hidden'}))
-                        .appendTo('body')
-                        .submit();
-                    }
-                }
-            });
-    
-            return false;
-        });
-    });
-</script>
-SCRIPT;
-        }
-
-        return $result;
     }
 }

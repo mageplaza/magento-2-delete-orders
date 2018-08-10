@@ -45,7 +45,7 @@ class Delete extends Order
         $resultRedirect = $this->resultRedirectFactory->create();
 
         $helper = $this->_objectManager->get(Data::class);
-        if (!$helper->isEnabled() || !$this->isValidPostRequest()) {
+        if (!$helper->isEnabled()) {
             $this->messageManager->addError(__('Cannot delete the order.'));
 
             return $resultRedirect->setPath('sales/order/view', ['order_id' => $this->getRequest()->getParam('order_id')]);
