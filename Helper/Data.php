@@ -33,6 +33,7 @@ class Data extends AbstractData
 
     /**
      * @param $order
+     * @return $this
      */
     public function deleteRelatedOrderData($order){
         if($order->hasInvoices()){
@@ -52,5 +53,7 @@ class Data extends AbstractData
                 $creditmemo->delete();
             }
         }
+
+        return $this;
     }
 }
