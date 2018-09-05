@@ -30,30 +30,4 @@ use Mageplaza\Core\Helper\AbstractData;
 class Data extends AbstractData
 {
     const CONFIG_MODULE_PATH = 'delete_orders';
-
-    /**
-     * @param $order
-     * @return $this
-     */
-    public function deleteRelatedOrderData($order){
-        if($order->hasInvoices()){
-            foreach ($order->getInvoiceCollection() as $invoice) {
-                $invoice->delete();
-            }
-        }
-
-        if($order->hasShipments()){
-            foreach ($order->getShipmentsCollection() as $shipment) {
-                $shipment->delete();
-            }
-        }
-
-        if($order->hasCreditmemos()){
-            foreach ($order->getCreditmemosCollection() as $creditmemo) {
-                $creditmemo->delete();
-            }
-        }
-
-        return $this;
-    }
 }

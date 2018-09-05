@@ -23,6 +23,7 @@ namespace Mageplaza\DeleteOrders\Controller\Adminhtml\Order;
 
 use Magento\Sales\Controller\Adminhtml\Order;
 use Mageplaza\DeleteOrders\Helper\Data;
+use Mageplaza\DeleteOrders\Model\Sales\Delete\Grid as DeleteDataGrid;
 
 /**
  * Class Delete
@@ -45,6 +46,7 @@ class Delete extends Order
         $resultRedirect = $this->resultRedirectFactory->create();
 
         $helper = $this->_objectManager->get(Data::class);
+        $deleteGrid = $this->_objectManager->get(DeleteDataGrid::class);
         if (!$helper->isEnabled()) {
             $this->messageManager->addError(__('Cannot delete the order.'));
 
@@ -53,9 +55,16 @@ class Delete extends Order
 
         $order = $this->_initOrder();
         if ($order) {
+            $orderId =  $order->getId();
             try {
-                $helper->deleteRelatedOrderData($order);
+                /** delete order*/
                 $this->orderRepository->delete($order);
+                /** check order if it exist because can not delete order*/
+                $checkOrder = $this->orderRepository->get($orderId);
+                if(!$checkOrder->getId()){
+                    $deleteGrid->deleteRecord($orderId);
+                }
+
                 $this->messageManager->addSuccessMessage(__('The order has been deleted.'));
             } catch (\Magento\Framework\Exception\LocalizedException $e) {
                 $this->messageManager->addErrorMessage($e->getMessage());

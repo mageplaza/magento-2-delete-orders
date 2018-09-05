@@ -29,6 +29,7 @@ use Magento\Sales\Model\OrderRepository;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Ui\Component\MassAction\Filter;
 use Mageplaza\DeleteOrders\Helper\Data as DataHelper;
+use Mageplaza\DeleteOrders\Model\Sales\Delete\Grid as DeleteDataGrid;
 
 /**
  * Class MassDelete
@@ -85,11 +86,19 @@ class MassDelete extends AbstractMassAction
         if ($this->helper->isEnabled()) {
             $deleted = 0;
 
+            $deleteGrid = $this->_objectManager->get(DeleteDataGrid::class);
             /** @var \Magento\Sales\Api\Data\OrderInterface $order */
             foreach ($collection->getItems() as $order) {
+                $orderId =  $order->getId();
                 try {
-                    $this->helper->deleteRelatedOrderData($order);
+                    /** delete order*/
                     $this->orderRepository->delete($order);
+                    /** check order if it exist because can not delete order*/
+                    $checkOrder = $this->orderRepository->get($orderId);
+                    if(!$checkOrder->getId()){
+                        $deleteGrid->deleteRecord($orderId);
+                    }
+
                     $deleted++;
                 } catch (\Exception $e) {
                     $this->messageManager->addErrorMessage(__('Cannot delete order #%1. Please try again later.', $order->getIncrementId()));
