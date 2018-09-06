@@ -55,15 +55,11 @@ class Delete extends Order
 
         $order = $this->_initOrder();
         if ($order) {
-            $orderId =  $order->getId();
             try {
                 /** delete order*/
                 $this->orderRepository->delete($order);
-                /** check order if it exist because can not delete order*/
-                $checkOrder = $this->orderRepository->get($orderId);
-                if(!$checkOrder->getId()){
-                    $deleteGrid->deleteRecord($orderId);
-                }
+                /** delete order data on grid report data related*/
+                $deleteGrid->deleteRecord($order->getId());
 
                 $this->messageManager->addSuccessMessage(__('The order has been deleted.'));
             } catch (\Magento\Framework\Exception\LocalizedException $e) {
