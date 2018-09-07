@@ -15,7 +15,7 @@
  *
  * @category    Mageplaza
  * @package     Mageplaza_DeleteOrders
- * @copyright   Copyright (c) Mageplaza (http://www.mageplaza.com/)
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
  * @license     https://www.mageplaza.com/LICENSE.txt
  */
 
@@ -46,7 +46,6 @@ class Delete extends Order
         $resultRedirect = $this->resultRedirectFactory->create();
 
         $helper = $this->_objectManager->get(Data::class);
-        $deleteGrid = $this->_objectManager->get(DeleteDataGrid::class);
         if (!$helper->isEnabled()) {
             $this->messageManager->addError(__('Cannot delete the order.'));
 
@@ -59,7 +58,7 @@ class Delete extends Order
                 /** delete order*/
                 $this->orderRepository->delete($order);
                 /** delete order data on grid report data related*/
-                $deleteGrid->deleteRecord($order->getId());
+                $this->_objectManager->get(DeleteDataGrid::class)->deleteRecord($order->getId());
 
                 $this->messageManager->addSuccessMessage(__('The order has been deleted.'));
             } catch (\Magento\Framework\Exception\LocalizedException $e) {
