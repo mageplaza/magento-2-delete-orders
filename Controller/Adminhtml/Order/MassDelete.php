@@ -26,6 +26,7 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use Magento\Sales\Controller\Adminhtml\Order\AbstractMassAction;
 use Magento\Sales\Model\OrderRepository;
+use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Ui\Component\MassAction\Filter;
 use Mageplaza\DeleteOrders\Helper\Data as DataHelper;
 
@@ -56,18 +57,21 @@ class MassDelete extends AbstractMassAction
      * MassDelete constructor.
      * @param Context $context
      * @param Filter $filter
+     * @param CollectionFactory $collectionFactory
      * @param OrderRepository $orderRepository
      * @param DataHelper $dataHelper
      */
     public function __construct(
         Context $context,
         Filter $filter,
+        CollectionFactory $collectionFactory,
         OrderRepository $orderRepository,
         DataHelper $dataHelper
     )
     {
         parent::__construct($context, $filter);
 
+        $this->collectionFactory = $collectionFactory;
         $this->orderRepository   = $orderRepository;
         $this->helper            = $dataHelper;
     }
