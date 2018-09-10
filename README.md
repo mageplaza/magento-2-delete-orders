@@ -6,22 +6,19 @@
 ## Highlight features
 
 - Delete mass orders
-- Delete mass invoices
-- Delete mass shipments
-- Delete mass credit memos
 - Ability to delete all
 - Delete related data safely
 
 
 ## 1. Documentation
 
-- Installation guide: https://www.mageplaza.com/install-magento-2-extension/
-- User guide: http://docs.mageplaza.com/delete-order-m2/index.html
-- Introduction page: https://www.mageplaza.com/magento-2-delete-orders/
-- Get Support: https://github.com/mageplaza/magento-2-delete-orders/issues
-- Contribute on Github: https://github.com/mageplaza/magento-2-delete-orders
-- Changelog: https://www.mageplaza.com/changelog/m2-delete-orders.txt
-- License https://www.mageplaza.com/LICENSE.txt
+- [Installation guide](https://www.mageplaza.com/install-magento-2-extension/)
+- [User guide](http://docs.mageplaza.com/delete-order-m2/index.html)
+- [Introduction page](https://www.mageplaza.com/magento-2-delete-orders/)
+- [Get Support])(https://github.com/mageplaza/magento-2-delete-orders/issues)
+- [Contribute on Github](https://github.com/mageplaza/magento-2-delete-orders)
+- [Changelog](https://github.com/mageplaza/magento-2-delete-orders/releases)
+- [License](https://www.mageplaza.com/LICENSE.txt)
 
 ## 2. FAQs
 
@@ -36,7 +33,7 @@ A: Read solution: https://github.com/mageplaza/module-core/issues/3
 Run the following command in Magento 2 root folder:
 
 ```
-composer require mageplaza/module-delete-order
+composer require mageplaza/module-delete-orders
 php bin/magento setup:upgrade
 php bin/magento setup:static-content:deploy
 ```
@@ -64,10 +61,6 @@ The large number of test orders can confuse store admins and this can cause inco
 ### Delete mass test orders
 
 To remove one order, store admins only need to manipulate with few clicks. Also, many orders created for testing purposes can be remove completely in a large number simultaneously by checking multiple desired items and clicking on Delete. Other related data will be removed along with the orders without any risks to affect the rest data.
-
-### Delete mass test Invoices, Shipments and Credit Memos
-
-Like deleting test orders, removing invoices, shipments and credit memos is also easy. Within simple steps, all of them can be erased from the backend along with their data. Store admins can delete only one or many invoices/shipments/credit memos at once.
 
 ### Delete all
 
