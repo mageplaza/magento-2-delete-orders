@@ -29,6 +29,7 @@ use Magento\Sales\Model\OrderRepository;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Ui\Component\MassAction\Filter;
 use Mageplaza\DeleteOrders\Helper\Data as DataHelper;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class MassDelete
@@ -54,19 +55,26 @@ class MassDelete extends AbstractMassAction
     protected $helper;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * MassDelete constructor.
      * @param Context $context
      * @param Filter $filter
      * @param CollectionFactory $collectionFactory
      * @param OrderRepository $orderRepository
      * @param DataHelper $dataHelper
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Context $context,
         Filter $filter,
         CollectionFactory $collectionFactory,
         OrderRepository $orderRepository,
-        DataHelper $dataHelper
+        DataHelper $dataHelper,
+        LoggerInterface $logger
     )
     {
         parent::__construct($context, $filter);
@@ -74,6 +82,7 @@ class MassDelete extends AbstractMassAction
         $this->collectionFactory = $collectionFactory;
         $this->orderRepository   = $orderRepository;
         $this->helper            = $dataHelper;
+        $this->logger            = $logger;
     }
 
     /**
@@ -95,6 +104,7 @@ class MassDelete extends AbstractMassAction
 
                     $deleted++;
                 } catch (\Exception $e) {
+                    $this->logger->critical($e);
                     $this->messageManager->addErrorMessage(__('Cannot delete order #%1. Please try again later.', $order->getIncrementId()));
                 }
             }
