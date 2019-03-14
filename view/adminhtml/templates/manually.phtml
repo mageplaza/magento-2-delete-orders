@@ -1,0 +1,53 @@
+<?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_DeleteOrders
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+
+/** @var \Mageplaza\DeleteOrders\Block\Adminhtml\System\Config\Manually $block */ ?>
+
+<button id="mpdeleteorders_run_manually" title="Run Manually" type="button" class="primary">
+    <span><?php echo __('Run Manually') ?></span>
+</span></button>
+<div class="mpdeleteorders_popup_confirm"></div>
+
+<style>
+    button#mpdeleteorders_run_manually {
+        width: 94%;
+    }
+</style>
+
+<script>
+    require([
+        'jquery',
+        'Magento_Ui/js/modal/confirm',
+        'mage/translate',
+    ], function ($, confirm, $t) {
+        $("#mpdeleteorders_run_manually").on('click', function() {
+            confirm({
+                content: $t('Are you sure to run manually?'),
+                actions: {
+                    /** @inheritdoc */
+                    confirm: function () {
+                        window.location.href = "<?php echo $block->getUrl('sales/delete/manually', ['_current' => true, '_use_rewrite' => true]); ?>";
+                    }
+                }
+            });
+        });
+    })
+</script>

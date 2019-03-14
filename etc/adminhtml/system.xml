@@ -33,6 +33,84 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
+            <group id="schedule" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <label>Automatic Delete Configuration</label>
+                <field id="schedule_for" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Schedule For</label>
+                    <source_model>Mageplaza\DeleteOrders\Model\Config\Source\Frequency</source_model>
+                    <backend_model>Mageplaza\DeleteOrders\Model\Config\Backend\Order\Frequency</backend_model>
+                    <comment>Set up the schedule in which orders are deleted automatically.</comment>
+                </field>
+                <field id="time" translate="label" type="time" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Start Time</label>
+                </field>
+                <field id="day_before" sortOrder="20" type="text" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Excluded Period</label>
+                    <validate>validate-number</validate>
+                    <comment><![CDATA[
+                            <span>Counted by day(s). The time before the current day in which the orders are not automatically Deleted.</span><br />
+                            <span>For example, Period = 30 days, today is December 31st, 2018, all orders created from November 30th, 2018) will be deleted (if they meet the conditions belows)</span><br />
+                        ]]>
+                    </comment>
+                </field>
+                <field id="order_status" translate="label comment" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Order Status</label>
+                    <source_model>Mageplaza\DeleteOrders\Model\Config\Source\Status</source_model>
+                </field>
+                <field id="customer_groups" translate="label comment" type="multiselect" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Customer Group(s)</label>
+                    <source_model>Mageplaza\DeleteOrders\Model\Config\Source\CustomerGroups</source_model>
+                </field>
+                <field id="store_views" translate="label comment" type="multiselect" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Store View(s)</label>
+                    <source_model>Mageplaza\DeleteOrders\Model\Config\Source\StoreViews</source_model>
+                </field>
+                <field id="country" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Shipping Countries</label>
+                    <source_model>Mageplaza\DeleteOrders\Model\Config\Source\Country</source_model>
+                </field>
+                <field id="specific_country" translate="label comment" type="multiselect" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                    <depends><field id="country">1</field></depends>
+                </field>
+                <field id="order_under" sortOrder="60" type="text" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Order Total less than</label>
+                    <validate>validate-number</validate>
+                </field>
+                <field id="run_manually" translate="label comment" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Mageplaza\DeleteOrders\Block\Adminhtml\System\Config\Manually</frontend_model>
+                    <comment><![CDATA[
+                            <span>Click Run Manually to delete the orders which meet the above conditions anytime</span><br />
+                            <span>In case you want to delete a specific order, you can use command line</span><br />
+                            <span><b>php bin/magento order:delete order_id</b></span><br />
+                        ]]>
+                    </comment>
+                </field>
+            </group>
+            <group id="email" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <label>Email Notification</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[
+                            <span>Email can be sent only when orders are deleted automatically by schedule.</span><br />
+                            <span>Install <a href="https://www.mageplaza.com/magento-2-smtp/?utm_source=mageplaza&utm_medium=mageplaza&utm_campaign=mageplaza-review&utm_content=SMTP" target="_blank">Mageplaza_SMTP</a> to avoid sending to spam box.</span>
+                        ]]>
+                    </comment>
+                </field>
+                <field id="sender" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Sender</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+                </field>
+                <field id="template" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Email Template</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
+                </field>
+                <field id="to" sortOrder="40" type="text" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Send To</label>
+                    <comment>Separated by comma(s)</comment>
+                </field>
+            </group>
         </section>
     </system>
 </config>

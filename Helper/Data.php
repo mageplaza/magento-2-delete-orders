@@ -36,24 +36,24 @@ class Data extends AbstractData
     const CONFIG_MODULE_PATH = 'delete_orders';
 
     /**
-     * @var OrderFactory
+     * @var \Magento\Sales\Model\ResourceModel\OrderFactory
      */
     private $orderResourceFactory;
 
     /**
      * Data constructor.
-     * @param Context $context
-     * @param ObjectManagerInterface $objectManager
-     * @param StoreManagerInterface $storeManager
-     * @param OrderFactory $orderResourceFactory
+     *
+     * @param \Magento\Framework\App\Helper\Context           $context
+     * @param \Magento\Framework\ObjectManagerInterface       $objectManager
+     * @param \Magento\Store\Model\StoreManagerInterface      $storeManager
+     * @param \Magento\Sales\Model\ResourceModel\OrderFactory $orderResourceFactory
      */
     public function __construct(
         Context $context,
         ObjectManagerInterface $objectManager,
         StoreManagerInterface $storeManager,
         OrderFactory $orderResourceFactory
-    )
-    {
+    ) {
         $this->orderResourceFactory = $orderResourceFactory;
 
         parent::__construct($context, $objectManager, $storeManager);
@@ -65,7 +65,7 @@ class Data extends AbstractData
     public function deleteRecord($orderId)
     {
         /** @var \Magento\Sales\Model\ResourceModel\Order $resource */
-        $resource = $this->orderResourceFactory->create();
+        $resource   = $this->orderResourceFactory->create();
         $connection = $resource->getConnection();
 
         /** delete invoice grid record via resource model*/
@@ -87,5 +87,96 @@ class Data extends AbstractData
         );
 
         return;
+    }
+
+    /**
+     * @param  $days
+     *
+     * @return false|string
+     */
+    public function setDate($days)
+    {
+        return date('Y-m-d H:i:s', strtotime('-' . $days . ' days'));
+    }
+
+    /**
+     * @param  null $storeId
+     *
+     * @return mixed
+     */
+    public function getOrderStatusConfig($storeId = null)
+    {
+        return explode(',', $this->getScheduleConfig('order_status', $storeId));
+    }
+
+    /**
+     * @param  null $storeId
+     *
+     * @return mixed
+     */
+    public function getOrderCustomerGroupConfig($storeId = null)
+    {
+        return explode(',', $this->getScheduleConfig('customer_groups', $storeId));
+    }
+
+    /**
+     * @param  null $storeId
+     *
+     * @return array
+     */
+    public function getStoreViewConfig($storeId = null)
+    {
+        return explode(',', $this->getScheduleConfig('store_views', $storeId));
+    }
+
+    /**
+     * @param  null $storeId
+     *
+     * @return mixed
+     */
+    public function getShippingCountryType($storeId = null)
+    {
+        return $this->getScheduleConfig('country', $storeId);
+    }
+
+    /**
+     * @param  null $storeId
+     *
+     * @return array
+     */
+    public function getCountriesConfig($storeId = null)
+    {
+        return explode(',', $this->getScheduleConfig('specific_country', $storeId));
+    }
+
+    /**
+     * @param  null $storeId
+     *
+     * @return mixed
+     */
+    public function getOrderTotalConfig($storeId = null)
+    {
+        return $this->getScheduleConfig('order_under', $storeId);
+    }
+
+    /**
+     * @param  null $storeId
+     *
+     * @return mixed
+     */
+    public function getPeriodConfig($storeId = null)
+    {
+        return $this->getScheduleConfig('day_before', $storeId);
+    }
+
+    /**
+     * @param       $code
+     * @param  null $storeId
+     *
+     * @return mixed
+     */
+    public function getScheduleConfig($code, $storeId = null)
+    {
+        return $this->getModuleConfig('schedule/' . $code, $storeId);
     }
 }
