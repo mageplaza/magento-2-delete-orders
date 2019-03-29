@@ -28,9 +28,10 @@
             <resource>Mageplaza_DeleteOrders::configuration</resource>
             <group id="general" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>General</label>
-                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Select Yes to enable this module</comment>
                 </field>
             </group>
             <group id="schedule" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
@@ -48,8 +49,7 @@
                     <label>Excluded Period</label>
                     <validate>validate-number</validate>
                     <comment><![CDATA[
-                            <span>Counted by day(s). The time before the current day in which the orders are not automatically Deleted.</span><br />
-                            <span>For example, Period = 30 days, today is December 31st, 2018, all orders created from November 30th, 2018) will be deleted (if they meet the conditions belows)</span><br />
+                            <span>For example, today is Sunday this week. If you set the period as 7 days, all the orders before Sunday last week will be deleted (if they meet the below conditions) </span><br />
                         ]]>
                     </comment>
                 </field>

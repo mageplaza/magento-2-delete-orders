@@ -40,45 +40,42 @@ class Delete extends Command
     const ORDER_ID = 'order_id';
 
     /**
-     * @var \Mageplaza\DeleteOrders\Model\ResourceModel\Action
+     * @var Action
      */
     protected $_action;
 
     /**
-     * @var \Mageplaza\DeleteOrders\Helper\Data
+     * @var HelperData
      */
     protected $_helperData;
 
     /**
-     * @var \Magento\Sales\Model\OrderRepository
+     * @var OrderRepository
      */
     protected $orderRepository;
 
     /**
-     * @var \Magento\Framework\App\State
+     * @var state
      */
     protected $state;
-
     /**
      * Delete constructor.
      *
-     * @param \Mageplaza\DeleteOrders\Model\ResourceModel\Action $action
-     * @param \Mageplaza\DeleteOrders\Helper\Data                $helperData
-     * @param null                                               $name
-     * @param \Magento\Sales\Model\OrderRepository               $orderRepository
-     * @param \Magento\Framework\App\State                       $state
+     * @param Action $action
+     * @param HelperData $helperData
+     * @param null $name
      */
     public function __construct(
         Action $action,
         HelperData $helperData,
-        $name = null,
         OrderRepository $orderRepository,
-        state $state
+        state $state,
+        $name = null
     ) {
-        $this->_action         = $action;
-        $this->_helperData     = $helperData;
-        $this->orderRepository = $orderRepository;
-        $this->state           = $state;
+        $this->_action     = $action;
+        $this->_helperData = $helperData;
+        $this->orderRepository   = $orderRepository;
+        $this->state = $state;
 
         parent::__construct($name);
     }
@@ -102,12 +99,11 @@ class Delete extends Command
     {
         if (!$this->_helperData->isEnabled()) {
             $output->writeln('<error>Please enable the module.</error>');
-
             return;
         }
-        if (!$this->state->getAreaCode()) {
-            $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_FRONTEND);
-        }
+
+        $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_FRONTEND);
+
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $objectManager->get('Magento\Framework\Registry')->register('isSecureArea', true);
 

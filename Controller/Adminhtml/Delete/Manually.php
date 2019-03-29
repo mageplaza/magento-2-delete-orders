@@ -82,7 +82,7 @@ class Manually extends Action
             try {
                 $numberOfOrders = count($orderIds);
                 if ($numberOfOrders < 1) {
-                    $this->messageManager->addSuccessMessage(__('No order has been deleteed!'));
+                    $this->messageManager->addSuccessMessage(__('No order has been deleted!'));
                 } elseif ($numberOfOrders == 1) {
                     /** delete order*/
                     $this->orderRepository->deleteById(reset($orderIds));
