@@ -10,12 +10,16 @@
 - Delete related data safely
 
 
+[![Latest Stable Version](https://poser.pugx.org/mageplaza/module-delete-orders/v/stable)](https://packagist.org/packages/mageplaza/module-delete-orders)
+[![Total Downloads](https://poser.pugx.org/mageplaza/module-delete-orders/downloads)](https://packagist.org/packages/mageplaza/module-delete-orders)
+
+
 ## 1. Documentation
 
 - [Installation guide](https://www.mageplaza.com/install-magento-2-extension/)
 - [User guide](http://docs.mageplaza.com/delete-order-m2/index.html)
 - [Introduction page](https://www.mageplaza.com/magento-2-delete-orders/)
-- [Get Support])(https://github.com/mageplaza/magento-2-delete-orders/issues)
+- [Get Support](https://github.com/mageplaza/magento-2-delete-orders/issues)
 - [Contribute on Github](https://github.com/mageplaza/magento-2-delete-orders)
 - [Changelog](https://github.com/mageplaza/magento-2-delete-orders/releases)
 - [License](https://www.mageplaza.com/LICENSE.txt)
