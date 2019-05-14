@@ -31,7 +31,7 @@ use Magento\Framework\Option\ArrayInterface;
 class Country implements ArrayInterface
 {
     const SPECIFIC = '1';
-    const ALL      = '2';
+    const ALL = '2';
 
     /**
      * Return array of options as value-label pairs
@@ -41,8 +41,8 @@ class Country implements ArrayInterface
     public function toOptionArray()
     {
         return [
-            ['value' => self::SPECIFIC, 'label' => __('Specific Countries')],
             ['value' => self::ALL, 'label' => __('All Countries')],
+            ['value' => self::SPECIFIC, 'label' => __('Specific Countries')]
         ];
     }
 }

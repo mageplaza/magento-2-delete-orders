@@ -50,9 +50,8 @@ class AddDeleteButton
     public function __construct(
         Data $helper,
         AuthorizationInterface $authorization
-    )
-    {
-        $this->helper         = $helper;
+    ) {
+        $this->helper = $helper;
         $this->_authorization = $authorization;
     }
 
@@ -68,11 +67,12 @@ class AddDeleteButton
             $object->addButton(
                 'order_delete',
                 [
-                    'label'          => __('Delete'),
-                    'class'          => 'delete',
-                    'id'             => 'order-view-delete-button',
+                    'label'   => __('Delete'),
+                    'class'   => 'delete',
+                    'id'      => 'order-view-delete-button',
                     'onclick' => "confirmSetLocation('{$message}', '{$object->getDeleteUrl()}')"
-                ]);
+                ]
+            );
         }
 
         return [$layout];

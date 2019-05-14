@@ -1,11 +1,45 @@
+"Order Id","Order Id"
+"Success! ' . . ' orders have been deleted","Success! ' . . ' orders have been deleted"
+"The following orders cannot being deleted. %1","The following orders cannot being deleted. %1"
+"No order has been deleted!","No order has been deleted!"
 "Cannot delete the order.","Cannot delete the order."
 "The order has been deleted.","The order has been deleted."
 "An error occurred while deleting the order. Please try again later.","An error occurred while deleting the order. Please try again later."
 "Cannot delete order #%1. Please try again later.","Cannot delete order #%1. Please try again later."
 "A total of %1 order(s) has been deleted.","A total of %1 order(s) has been deleted."
-Delete,Delete
+"We can't save the cron expression. %1","We can't save the cron expression. %1"
+"All Countries","All Countries"
+"Specific Countries","Specific Countries"
+Disable,Disable
 "Are you sure you want to delete this order?","Are you sure you want to delete this order?"
+Delete,Delete
+"Run Manually","Run Manually"
+"Auto delete orders notification at %store_name","Auto delete orders notification at %store_name"
+"Hi,","Hi,"
+"The automatic delete-order schedule has been activated.","The automatic delete-order schedule has been activated."
+"There are %num_order orders has been processed this time. With:","There are %num_order orders has been processed this time. With:"
+Successfull:,Successfull:
+Error:,Error:
+"Best Regards,","Best Regards,"
+"Are you sure to run manually?","Are you sure to run manually?"
 "Delete Orders","Delete Orders"
 General,General
 Enable,Enable
+"Select Yes to enable this module","Select Yes to enable this module"
+"Automatic Delete Configuration","Automatic Delete Configuration"
+"Schedule For","Schedule For"
+"Set up the schedule in which orders are deleted automatically.","Set up the schedule in which orders are deleted automatically."
+"Start Time","Start Time"
+"Excluded Period","Excluded Period"
+"For example, today is Sunday this week. If you set the period as 7 days, all the orders before Sunday last week will be deleted (if they meet the below conditions).","For example, today is Sunday this week. If you set the period as 7 days, all the orders before Sunday last week will be deleted (if they meet the below conditions)."
+"Order Status","Order Status"
+"Customer Group(s)","Customer Group(s)"
+"Store View(s)","Store View(s)"
+"Shipping Countries","Shipping Countries"
+"Order Total less than","Order Total less than"
+"Email Notification","Email Notification"
+Sender,Sender
+"Email Template","Email Template"
+"Send To","Send To"
+"Separated by comma(s)","Separated by comma(s)"
 "Do you really want to delete this orders?","Do you really want to delete this orders?"

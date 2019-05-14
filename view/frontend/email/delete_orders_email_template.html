@@ -24,11 +24,13 @@
 
 {{template config_path="design/email/header_template"}}
 
-<div>
-    <span>{{trans "Hi Admin"}}</span><br/><br/>
-    <span>{{trans "The automatic delete-order schedule has been activated."}}</span>
-    <b>{{trans "%num_order order(s)" num_order=$num_order}}</b><span>{{trans " have been deleted."}}</span><br/><br/>
-    <span>{{trans "Best Regard."}}</span>
-</div>
+<p class="greeting">{{trans "Hi,"}}</p>
+<p>{{trans "The automatic delete-order schedule has been activated."}}</p>
+<p>{{trans 'There are %num_order orders has been processed this time. With:' num_order=$num_order}}</p>
+<ul>
+    <li><strong>{{trans "Successfull:"}}</strong> {{var success_order}}</li>
+    <li><strong>{{trans "Error:"}}</strong> {{var error_order}}</li>
+</ul>
+<p>{{trans "Best Regards,"}}</p>
 
 {{template config_path="design/email/footer_template"}}

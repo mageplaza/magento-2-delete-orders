@@ -19,11 +19,13 @@
  * @license     https://www.mageplaza.com/LICENSE.txt
  */
 
-/** @var \Mageplaza\DeleteOrders\Block\Adminhtml\System\Config\Manually $block */ ?>
+use Mageplaza\DeleteOrders\Block\Adminhtml\System\Config\Manually;
+
+/** @var Manually $block */ ?>
 
 <button id="mpdeleteorders_run_manually" title="Run Manually" type="button" class="primary">
-    <span><?php echo __('Run Manually') ?></span>
-</span></button>
+    <span><?= __('Run Manually') ?></span>
+    </span></button>
 <div class="mpdeleteorders_popup_confirm"></div>
 
 <style>
@@ -38,13 +40,13 @@
         'Magento_Ui/js/modal/confirm',
         'mage/translate',
     ], function ($, confirm, $t) {
-        $("#mpdeleteorders_run_manually").on('click', function() {
+        $("#mpdeleteorders_run_manually").on('click', function () {
             confirm({
                 content: $t('Are you sure to run manually?'),
                 actions: {
                     /** @inheritdoc */
                     confirm: function () {
-                        window.location.href = "<?php echo $block->getUrl('sales/delete/manually', ['_current' => true, '_use_rewrite' => true]); ?>";
+                        window.location.href = "<?= $block->getUrl('sales/delete/manually', ['_current' => true, '_use_rewrite' => true]) ?>";
                     }
                 }
             });

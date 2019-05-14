@@ -49,9 +49,8 @@ class AddDeleteAction
     public function __construct(
         Data $helper,
         AuthorizationInterface $authorization
-    )
-    {
-        $this->helper         = $helper;
+    ) {
+        $this->helper = $helper;
         $this->_authorization = $authorization;
     }
 

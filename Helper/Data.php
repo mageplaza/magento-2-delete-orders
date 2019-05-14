@@ -23,9 +23,14 @@ namespace Mageplaza\DeleteOrders\Helper;
 
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\Sales\Model\ResourceModel\Order;
+use Magento\Sales\Model\ResourceModel\Order\Collection;
+use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Sales\Model\ResourceModel\OrderFactory;
+use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use Mageplaza\Core\Helper\AbstractData;
+use Mageplaza\DeleteOrders\Model\Config\Source\Country;
 
 /**
  * Class Data
@@ -36,27 +41,74 @@ class Data extends AbstractData
     const CONFIG_MODULE_PATH = 'delete_orders';
 
     /**
-     * @var \Magento\Sales\Model\ResourceModel\OrderFactory
+     * @var OrderFactory
      */
     private $orderResourceFactory;
+
+    protected $orderCollectionFactory;
 
     /**
      * Data constructor.
      *
-     * @param \Magento\Framework\App\Helper\Context           $context
-     * @param \Magento\Framework\ObjectManagerInterface       $objectManager
-     * @param \Magento\Store\Model\StoreManagerInterface      $storeManager
-     * @param \Magento\Sales\Model\ResourceModel\OrderFactory $orderResourceFactory
+     * @param Context $context
+     * @param ObjectManagerInterface $objectManager
+     * @param StoreManagerInterface $storeManager
+     * @param OrderFactory $orderResourceFactory
      */
     public function __construct(
         Context $context,
         ObjectManagerInterface $objectManager,
         StoreManagerInterface $storeManager,
+        CollectionFactory $orderCollectionFactory,
         OrderFactory $orderResourceFactory
     ) {
         $this->orderResourceFactory = $orderResourceFactory;
+        $this->orderCollectionFactory = $orderCollectionFactory;
 
         parent::__construct($context, $objectManager, $storeManager);
+    }
+
+    /**
+     * Get order collection which matching the delete config condition
+     *
+     * @param null $storeId
+     * @param int $limit
+     * @return Collection
+     */
+    public function getMatchingOrders($storeId = null, $limit = 1000)
+    {
+        $orderCollection = $this->orderCollectionFactory->create()
+            ->addFieldToFilter('status', ['in' => $this->getOrderStatusConfig($storeId)])
+            ->addFieldToFilter('customer_group_id', ['in' => $this->getOrderCustomerGroupConfig($storeId)]);
+
+        $storeIds = $this->getStoreViewConfig($storeId);
+        if (!in_array(Store::DEFAULT_STORE_ID, $storeIds, true)) {
+            $orderCollection->addFieldToFilter('store_id', ['in' => $storeIds]);
+        }
+
+        if ($total = $this->getOrderTotalConfig($storeId)) {
+            $orderCollection->addFieldToFilter('grand_total', ['lteq' => $total]);
+        }
+
+        if ($dayBefore = $this->getPeriodConfig($storeId)) {
+            $orderCollection->addFieldToFilter('created_at', ['lteq' => $this->setDate($dayBefore)]);
+        }
+
+        if ($limit) {
+            $orderCollection->getSelect()->limit($limit);
+        }
+
+        if ($this->getShippingCountryType($storeId) === Country::SPECIFIC) {
+            $orderCollection->getSelect()
+                ->joinLeft(
+                    ['soa' => $orderCollection->getTable('sales_order_address')],
+                    'main_table.entity_id = soa.parent_id',
+                    []
+                )
+                ->where('soa.country_id IN (?)', $this->getCountriesConfig($storeId));
+        }
+
+        return $orderCollection;
     }
 
     /**
@@ -64,8 +116,8 @@ class Data extends AbstractData
      */
     public function deleteRecord($orderId)
     {
-        /** @var \Magento\Sales\Model\ResourceModel\Order $resource */
-        $resource   = $this->orderResourceFactory->create();
+        /** @var Order $resource */
+        $resource = $this->orderResourceFactory->create();
         $connection = $resource->getConnection();
 
         /** delete invoice grid record via resource model*/
@@ -85,8 +137,6 @@ class Data extends AbstractData
             $resource->getTable('sales_creditmemo_grid'),
             $connection->quoteInto('order_id = ?', $orderId)
         );
-
-        return;
     }
 
     /**
@@ -100,7 +150,7 @@ class Data extends AbstractData
     }
 
     /**
-     * @param  null $storeId
+     * @param null $storeId
      *
      * @return mixed
      */
@@ -110,7 +160,7 @@ class Data extends AbstractData
     }
 
     /**
-     * @param  null $storeId
+     * @param null $storeId
      *
      * @return mixed
      */
@@ -120,7 +170,7 @@ class Data extends AbstractData
     }
 
     /**
-     * @param  null $storeId
+     * @param null $storeId
      *
      * @return array
      */
@@ -130,7 +180,7 @@ class Data extends AbstractData
     }
 
     /**
-     * @param  null $storeId
+     * @param null $storeId
      *
      * @return mixed
      */
@@ -140,7 +190,7 @@ class Data extends AbstractData
     }
 
     /**
-     * @param  null $storeId
+     * @param null $storeId
      *
      * @return array
      */
@@ -150,7 +200,7 @@ class Data extends AbstractData
     }
 
     /**
-     * @param  null $storeId
+     * @param null $storeId
      *
      * @return mixed
      */
@@ -160,7 +210,7 @@ class Data extends AbstractData
     }
 
     /**
-     * @param  null $storeId
+     * @param null $storeId
      *
      * @return mixed
      */
@@ -171,7 +221,7 @@ class Data extends AbstractData
 
     /**
      * @param       $code
-     * @param  null $storeId
+     * @param null $storeId
      *
      * @return mixed
      */

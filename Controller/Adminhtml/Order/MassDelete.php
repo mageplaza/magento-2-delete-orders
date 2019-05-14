@@ -21,9 +21,14 @@
 
 namespace Mageplaza\DeleteOrders\Controller\Adminhtml\Order;
 
+use Exception;
 use Magento\Backend\App\Action\Context;
+use Magento\Backend\Model\View\Result\Redirect;
+use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Controller\Adminhtml\Order\AbstractMassAction;
 use Magento\Sales\Model\OrderRepository;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
@@ -75,26 +80,25 @@ class MassDelete extends AbstractMassAction
         OrderRepository $orderRepository,
         DataHelper $dataHelper,
         LoggerInterface $logger
-    )
-    {
+    ) {
         parent::__construct($context, $filter);
 
         $this->collectionFactory = $collectionFactory;
-        $this->orderRepository   = $orderRepository;
-        $this->helper            = $dataHelper;
-        $this->logger            = $logger;
+        $this->orderRepository = $orderRepository;
+        $this->helper = $dataHelper;
+        $this->logger = $logger;
     }
 
     /**
      * @param AbstractCollection $collection
-     * @return \Magento\Backend\Model\View\Result\Redirect|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
+     * @return Redirect|ResponseInterface|ResultInterface
      */
     protected function massAction(AbstractCollection $collection)
     {
         if ($this->helper->isEnabled()) {
             $deleted = 0;
 
-            /** @var \Magento\Sales\Api\Data\OrderInterface $order */
+            /** @var OrderInterface $order */
             foreach ($collection->getItems() as $order) {
                 try {
                     /** delete order*/
@@ -103,7 +107,7 @@ class MassDelete extends AbstractMassAction
                     $this->helper->deleteRecord($order->getId());
 
                     $deleted++;
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->logger->critical($e);
                     $this->messageManager->addErrorMessage(__('Cannot delete order #%1. Please try again later.', $order->getIncrementId()));
                 }
@@ -113,7 +117,7 @@ class MassDelete extends AbstractMassAction
             }
         }
 
-        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
+        /** @var Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setPath($this->getComponentRefererUrl());
 

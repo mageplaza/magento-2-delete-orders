@@ -1,14 +1,12 @@
 # Delete Orders User Guide
 
-
 ## Documentation
-
 - Installation guide: https://www.mageplaza.com/install-magento-2-extension/
 - User guide: http://docs.mageplaza.com/delete-order-m2/index.html
 - Introduction page: https://www.mageplaza.com/magento-2-delete-orders/
 - Get Support: https://github.com/mageplaza/magento-2-delete-orders/issues
 - Contribute on Github: https://github.com/mageplaza/magento-2-delete-orders
-- Changelog: https://www.mageplaza.com/changelog/m2-delete-orders.txt
+- Changelog: https://www.mageplaza.com/releases/delete-orders
 - License https://www.mageplaza.com/LICENSE.txt
 
 

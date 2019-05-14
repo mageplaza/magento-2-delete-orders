@@ -21,6 +21,10 @@
 
 namespace Mageplaza\DeleteOrders\Controller\Adminhtml\Order;
 
+use Exception;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Controller\Adminhtml\Order;
 use Mageplaza\DeleteOrders\Helper\Data;
 
@@ -38,7 +42,7 @@ class Delete extends Order
     const ADMIN_RESOURCE = 'Magento_Sales::delete';
 
     /**
-     * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
+     * @return $this|ResponseInterface|ResultInterface
      */
     public function execute()
     {
@@ -48,7 +52,9 @@ class Delete extends Order
         if (!$helper->isEnabled()) {
             $this->messageManager->addError(__('Cannot delete the order.'));
 
-            return $resultRedirect->setPath('sales/order/view', ['order_id' => $this->getRequest()->getParam('order_id')]);
+            return $resultRedirect->setPath('sales/order/view', [
+                'order_id' => $this->getRequest()->getParam('order_id')
+            ]);
         }
 
         $order = $this->_initOrder();
@@ -60,11 +66,11 @@ class Delete extends Order
                 $helper->deleteRecord($order->getId());
 
                 $this->messageManager->addSuccessMessage(__('The order has been deleted.'));
-            } catch (\Magento\Framework\Exception\LocalizedException $e) {
+            } catch (LocalizedException $e) {
                 $this->messageManager->addErrorMessage($e->getMessage());
 
                 return $resultRedirect->setPath('sales/order/view', ['order_id' => $order->getId()]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->messageManager->addErrorMessage(__('An error occurred while deleting the order. Please try again later.'));
                 $this->_objectManager->get('Psr\Log\LoggerInterface')->critical($e);
 

@@ -21,6 +21,7 @@
 
 namespace Mageplaza\DeleteOrders\Helper;
 
+use Exception;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Mail\Template\TransportBuilder;
@@ -36,27 +37,27 @@ use Mageplaza\DeleteOrders\Helper\Data as HelperData;
  */
 class Email extends AbstractData
 {
-    const CONFIG_MODULE_PATH  = 'delete_orders';
+    const CONFIG_MODULE_PATH = 'delete_orders';
     const EMAIL_CONFIGURATION = '/email';
 
     /**
-     * @var \Magento\Framework\Mail\Template\TransportBuilder
+     * @var TransportBuilder
      */
     protected $transportBuilder;
 
     /**
-     * @var \Mageplaza\DeleteOrders\Helper\Data
+     * @var Data
      */
     protected $_helperData;
 
     /**
      * Email constructor.
      *
-     * @param \Magento\Framework\App\Helper\Context             $context
-     * @param \Magento\Framework\ObjectManagerInterface         $objectManager
-     * @param \Magento\Store\Model\StoreManagerInterface        $storeManager
-     * @param \Magento\Framework\Mail\Template\TransportBuilder $transportBuilder
-     * @param \Mageplaza\DeleteOrders\Helper\Data               $helperData
+     * @param Context $context
+     * @param ObjectManagerInterface $objectManager
+     * @param StoreManagerInterface $storeManager
+     * @param TransportBuilder $transportBuilder
+     * @param Data $helperData
      */
     public function __construct(
         Context $context,
@@ -66,14 +67,14 @@ class Email extends AbstractData
         HelperData $helperData
     ) {
         $this->transportBuilder = $transportBuilder;
-        $this->_helperData      = $helperData;
+        $this->_helperData = $helperData;
 
         parent::__construct($context, $objectManager, $storeManager);
     }
 
     /**
      * @param array $templateParams
-     * @param null  $storeId
+     * @param null $storeId
      *
      * @return $this
      */
@@ -93,7 +94,7 @@ class Email extends AbstractData
 
                 $transport->sendMessage();
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->_logger->critical($e->getMessage());
         }
 
@@ -104,7 +105,7 @@ class Email extends AbstractData
      * ======================================= Email Configuration ==================================================
      *
      * @param string $code
-     * @param null   $storeId
+     * @param null $storeId
      *
      * @return mixed
      */
@@ -123,7 +124,7 @@ class Email extends AbstractData
     public function isEnabledEmail($storeId = null)
     {
         if ($this->_helperData->isEnabled()) {
-            return (bool) $this->getConfigEmail('enabled', $storeId);
+            return (bool)$this->getConfigEmail('enabled', $storeId);
         }
 
         return false;

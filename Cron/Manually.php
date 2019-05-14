@@ -21,12 +21,15 @@
 
 namespace Mageplaza\DeleteOrders\Cron;
 
-use Mageplaza\DeleteOrders\Model\ResourceModel\Action;
-use Mageplaza\DeleteOrders\Helper\Email;
-use Mageplaza\DeleteOrders\Helper\Data as HelperData;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Sales\Model\OrderRepository;
+use Exception;
+use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
+use Magento\Framework\Registry;
+use Magento\Sales\Model\OrderRepository;
+use Magento\Store\Model\StoreManagerInterface;
+use Mageplaza\DeleteOrders\Helper\Data as HelperData;
+use Mageplaza\DeleteOrders\Helper\Email;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class Manually
@@ -39,11 +42,6 @@ class Manually
      * @var HelperData
      */
     protected $_helperData;
-
-    /**
-     * @var Action
-     */
-    protected $_action;
 
     /**
      * @var Email
@@ -66,27 +64,41 @@ class Manually
     protected $state;
 
     /**
+     * @var Registry
+     */
+    protected $registry;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * Manually constructor.
-     *
      * @param HelperData $helperData
-     * @param Action $action
      * @param Email $email
      * @param StoreManagerInterface $storeManager
+     * @param OrderRepository $orderRepository
+     * @param State $state
+     * @param Registry $registry
+     * @param LoggerInterface $logger
      */
     public function __construct(
         HelperData $helperData,
-        Action $action,
         Email $email,
         StoreManagerInterface $storeManager,
         OrderRepository $orderRepository,
-        state $state
+        state $state,
+        Registry $registry,
+        LoggerInterface $logger
     ) {
-        $this->_helperData   = $helperData;
-        $this->_action       = $action;
-        $this->_email        = $email;
+        $this->_helperData = $helperData;
+        $this->_email = $email;
         $this->_storeManager = $storeManager;
-        $this->orderRepository   = $orderRepository;
+        $this->orderRepository = $orderRepository;
         $this->state = $state;
+        $this->registry = $registry;
+        $this->logger = $logger;
     }
 
     /**
@@ -95,37 +107,40 @@ class Manually
     public function process()
     {
         foreach ($this->_storeManager->getStores() as $store) {
-            if ($this->_email->isEnabledEmail($store->getId())) {
+            $storeId = $store->getId();
+            if (!$this->_helperData->isEnabled($storeId)) {
+                continue;
+            }
 
-                if (!$this->state->getAreaCode()) {
-                    $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_FRONTEND);
-                }
-                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-                $objectManager->get('Magento\Framework\Registry')->register('isSecureArea', true);
+            $orderCollection = $this->_helperData->getMatchingOrders($storeId);
+            if ($numOfOrders = $orderCollection->getSize()) {
+                $this->registry->unregister('isSecureArea');
+                $this->registry->register('isSecureArea', true);
 
-                $orderIds = $this->_action->getMatchingOrders($store->getId());
-
-                $numberOfOrders = count($orderIds);
-
-                if($numberOfOrders == 1 ) {
-                    /** delete order*/
-                    $this->orderRepository->deleteById(reset($orderIds));
-                    /** delete order data on grid report data related*/
-                    $this->_helperData->deleteRecord(reset($orderIds));
-                } else {
-                    foreach ($orderIds as $id) {
-                        /** delete order*/
-                        $this->orderRepository->deleteById($id);
-                        /** delete order data on grid report data related*/
-                        $this->_helperData->deleteRecord($id);
+                $errorOrders = [];
+                foreach ($orderCollection->getItems() as $order) {
+                    try {
+                        $this->orderRepository->delete($order);
+                        $this->_helperData->deleteRecord(reset($orderIds));
+                    } catch (Exception $e) {
+                        $errorOrders[$order->getId()] = $order->getIncrementId();
+                        $this->logger->error($e->getMessage());
                     }
                 }
 
-                $templateParams = [
-                    'num_order' => $numberOfOrders
-                ];
+                if ($this->_email->isEnabledEmail($storeId)) {
+                    if (!$this->state->getAreaCode()) {
+                        $this->state->setAreaCode(Area::AREA_FRONTEND);
+                    }
 
-                $this->_email->sendEmailTemplate($templateParams, $store->getId());
+                    $templateParams = [
+                        'num_order'     => $numOfOrders,
+                        'success_order' => $numOfOrders - count($errorOrders),
+                        'error_order'   => $errorOrders
+                    ];
+
+                    $this->_email->sendEmailTemplate($templateParams, $storeId);
+                }
             }
         }
     }

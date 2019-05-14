@@ -21,41 +21,23 @@
 
 namespace Mageplaza\DeleteOrders\Model\Config\Source;
 
-use Magento\Framework\Option\ArrayInterface;
-
 /**
  * Class Frequency
  *
  * @package Mageplaza\DeleteOrders\Model\Config\Source
  */
-class Frequency implements ArrayInterface
+class Frequency extends \Magento\Cron\Model\Config\Source\Frequency
 {
-    /**
-     * @var array
-     */
-    protected static $_options;
-
     const DISABLE = 0;
-
-    const CRON_DAILY = 'D';
-
-    const CRON_WEEKLY = 'W';
-
-    const CRON_MONTHLY = 'M';
 
     /**
      * @return array
      */
     public function toOptionArray()
     {
-        if (!self::$_options) {
-            self::$_options = [
-                ['label' => __('Disable'), 'value' => self::DISABLE],
-                ['label' => __('Daily'), 'value' => self::CRON_DAILY],
-                ['label' => __('Weekly'), 'value' => self::CRON_WEEKLY],
-                ['label' => __('Monthly'), 'value' => self::CRON_MONTHLY],
-            ];
-        }
+        parent::toOptionArray();
+
+        array_unshift(self::$_options, ['label' => __('Disable'), 'value' => self::DISABLE]);
 
         return self::$_options;
     }

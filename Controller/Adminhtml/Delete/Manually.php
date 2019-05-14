@@ -21,10 +21,15 @@
 
 namespace Mageplaza\DeleteOrders\Controller\Adminhtml\Delete;
 
+use Exception;
 use Magento\Backend\App\Action;
-use Mageplaza\DeleteOrders\Model\ResourceModel\Action as OrderAction;
-use Mageplaza\DeleteOrders\Helper\Data as HelperData;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Sales\Model\OrderRepository;
+use Mageplaza\DeleteOrders\Helper\Data as HelperData;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class Manually
@@ -34,79 +39,73 @@ use Magento\Sales\Model\OrderRepository;
 class Manually extends Action
 {
     /**
-     * @var \Mageplaza\DeleteOrders\Model\ResourceModel\Action
-     */
-    protected $_action;
-
-    /**
-     * @var \Mageplaza\DeleteOrders\Helper\Data
+     * @var HelperData
      */
     protected $_helperData;
 
     /**
-     * @var \Magento\Sales\Model\OrderRepository
+     * @var OrderRepository
      */
     protected $orderRepository;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * Manually constructor.
-     *
-     * @param \Magento\Backend\App\Action\Context                $context
-     * @param \Mageplaza\DeleteOrders\Model\ResourceModel\Action $action
-     * @param \Mageplaza\DeleteOrders\Helper\Data                $helperData
-     * @param \Magento\Sales\Model\OrderRepository               $orderRepository
+     * @param Context $context
+     * @param HelperData $helperData
+     * @param OrderRepository $orderRepository
+     * @param LoggerInterface $logger
      */
     public function __construct(
-        Action\Context $context,
-        OrderAction $action,
+        Context $context,
         HelperData $helperData,
-        OrderRepository $orderRepository
+        OrderRepository $orderRepository,
+        LoggerInterface $logger
     ) {
-        $this->_action         = $action;
-        $this->_helperData     = $helperData;
+        $this->_helperData = $helperData;
         $this->orderRepository = $orderRepository;
+        $this->logger = $logger;
 
         parent::__construct($context);
     }
 
     /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Redirect|\Magento\Framework\Controller\ResultInterface
+     * @return ResponseInterface|Redirect|ResultInterface
      */
     public function execute()
     {
         $resultRedirect = $this->resultRedirectFactory->create();
-        $storeId        = $this->getRequest()->getParam('store');
-        $orderIds       = $this->_action->getMatchingOrders($storeId);
+        $storeId = $this->getRequest()->getParam('store');
 
-        if ($this->_helperData->isEnabled($storeId)) {
-            try {
-                $numberOfOrders = count($orderIds);
-                if ($numberOfOrders < 1) {
-                    $this->messageManager->addSuccessMessage(__('No order has been deleted!'));
-                } elseif ($numberOfOrders == 1) {
-                    /** delete order*/
-                    $this->orderRepository->deleteById(reset($orderIds));
-                    /** delete order data on grid report data related*/
+        $orderCollection = $this->_helperData->getMatchingOrders($storeId);
+        if ($orderCollection->getSize()) {
+            $successDelete = 0;
+            $errorOrders = [];
+            foreach ($orderCollection->getItems() as $order) {
+                try {
+                    $this->orderRepository->delete($order);
                     $this->_helperData->deleteRecord(reset($orderIds));
 
-                    $this->messageManager->addSuccessMessage(__('Success! ' . $numberOfOrders . ' order has been deleted'));
-                } else {
-                    foreach ($orderIds as $id) {
-                        /** delete order*/
-                        $this->orderRepository->deleteById($id);
-                        /** delete order data on grid report data related*/
-                        $this->_helperData->deleteRecord($id);
-                    }
-                    $this->messageManager->addSuccessMessage(__('Success! ' . $numberOfOrders . ' orders have been deleted'));
+                    $successDelete++;
+                } catch (Exception $e) {
+                    $errorOrders[$order->getId()] = $order->getIncrementId();
+                    $this->logger->error($e->getMessage());
                 }
-            } catch (\Exception $e) {
-                $this->messageManager
-                    ->addErrorMessage(
-                        __('An error occurred while running manually. Please try again later. %1', $e->getMessage())
-                    );
+            }
+
+            if ($successDelete) {
+                $this->messageManager->addSuccessMessage(__('Success! ' . $successDelete . ' orders have been deleted'));
+            }
+
+            if (count($errorOrders)) {
+                $this->messageManager->addSuccessMessage(__('The following orders cannot being deleted. %1', implode(', ', $errorOrders)));
             }
         } else {
-            $this->messageManager->addNoticeMessage(__('Please enable module!'));
+            $this->messageManager->addNoticeMessage(__('No order has been deleted!'));
         }
 
         return $resultRedirect->setUrl($this->_redirect->getRefererUrl());

@@ -21,14 +21,16 @@
 
 namespace Mageplaza\DeleteOrders\Console;
 
+use Exception;
+use Magento\Framework\App\Area;
+use Magento\Framework\App\State;
+use Magento\Framework\Registry;
+use Magento\Sales\Model\OrderRepository;
 use Mageplaza\DeleteOrders\Helper\Data as HelperData;
-use Mageplaza\DeleteOrders\Model\ResourceModel\Action;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Magento\Sales\Model\OrderRepository;
-use Magento\Framework\App\State;
 
 /**
  * Class Delete
@@ -38,11 +40,6 @@ use Magento\Framework\App\State;
 class Delete extends Command
 {
     const ORDER_ID = 'order_id';
-
-    /**
-     * @var Action
-     */
-    protected $_action;
 
     /**
      * @var HelperData
@@ -58,24 +55,31 @@ class Delete extends Command
      * @var state
      */
     protected $state;
+
+    /**
+     * @var Registry
+     */
+    protected $registry;
+
     /**
      * Delete constructor.
-     *
-     * @param Action $action
      * @param HelperData $helperData
+     * @param OrderRepository $orderRepository
+     * @param State $state
+     * @param Registry $registry
      * @param null $name
      */
     public function __construct(
-        Action $action,
         HelperData $helperData,
         OrderRepository $orderRepository,
         state $state,
+        Registry $registry,
         $name = null
     ) {
-        $this->_action     = $action;
         $this->_helperData = $helperData;
-        $this->orderRepository   = $orderRepository;
+        $this->orderRepository = $orderRepository;
         $this->state = $state;
+        $this->registry = $registry;
 
         parent::__construct($name);
     }
@@ -99,28 +103,24 @@ class Delete extends Command
     {
         if (!$this->_helperData->isEnabled()) {
             $output->writeln('<error>Please enable the module.</error>');
+
             return;
         }
 
-        $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_FRONTEND);
-
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $objectManager->get('Magento\Framework\Registry')->register('isSecureArea', true);
+        $this->state->setAreaCode(Area::AREA_ADMINHTML);
+        $this->registry->unregister('isSecureArea');
+        $this->registry->register('isSecureArea', true);
 
         $orderId = $input->getArgument(self::ORDER_ID);
-        if (in_array($orderId, $this->_action->getAllOrderIds(), true)) {
-            try {
-                /** delete order*/
-                $this->orderRepository->deleteById($orderId);
-                /** delete order data on grid report data related*/
-                $this->_helperData->deleteRecord($orderId);
+        try {
+            /** delete order*/
+            $this->orderRepository->deleteById($orderId);
+            /** delete order data on grid report data related*/
+            $this->_helperData->deleteRecord($orderId);
 
-                $output->writeln('<info>The delete order process has been successful!</info>');
-            } catch (\Exception $e) {
-                $output->writeln("<error>{$e->getMessage()}</error>");
-            }
-        } else {
-            $output->writeln('<error>The order ID has not been found!</error>');
+            $output->writeln('<info>The delete order process has been successful!</info>');
+        } catch (Exception $e) {
+            $output->writeln("<error>{$e->getMessage()}</error>");
         }
     }
 }
