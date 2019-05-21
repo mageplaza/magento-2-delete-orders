@@ -81,3 +81,25 @@ While deleting orders, invoices, shipments and credit memos, their related data 
 - Multiple languages are supported
 - It’s easy to customize
 - Mageplaza provides a well-documented user guide for Delete Orders extension
+
+**People also search:**
+- magento 2 delete order
+- magento 2 remove orders
+- magento 2 delete test orders
+- magento 2 delete order extension
+- mageplaza delete order
+- magento 2 delete all orders
+- magento 2 delete order extension free
+- magento 2 remove all orders
+- magento 2 delete orders from database
+
+
+**Other free Magnto 2 extension on Github**
+- [Magento 2 Google maps module](https://github.com/mageplaza/magento-2-google-maps)
+- [Magento 2 GDPR](https://github.com/mageplaza/magento-2-gdpr)
+- [Magento 2 Popup extension](https://github.com/mageplaza/magento-2-better-popup)
+- [Magento 2 Reporting extension](https://github.com/mageplaza/magento-2-reports)
+- [Magento 2 social login](https://github.com/mageplaza/magento-2-social-login)
+- [Magento 2 blog extension](https://github.com/mageplaza/magento-2-blog)
+- [Magento 2 Ajax Layered Navigation](https://github.com/mageplaza/magento-2-ajax-layered-navigation)
+- [Magento 2 security](https://github.com/mageplaza/magento-2-security)
