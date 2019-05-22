@@ -36,7 +36,8 @@ Enable,Enable
 "Customer Group(s)","Customer Group(s)"
 "Store View(s)","Store View(s)"
 "Shipping Countries","Shipping Countries"
-"Order Total less than","Order Total less than"
+"Order Total","Order Total"
+"Less than or equal this amount","Less than or equal this amount"
 "Email Notification","Email Notification"
 Sender,Sender
 "Email Template","Email Template"
