@@ -75,6 +75,7 @@ class Email extends AbstractData
     /**
      * @param array $templateParams
      * @param null $storeId
+     *
      * @return $this
      */
     public function sendEmailTemplate($templateParams = [], $storeId = null)
