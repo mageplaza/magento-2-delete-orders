@@ -69,6 +69,7 @@ class MassDelete extends AbstractMassAction
      * @var OrderManagementInterface
      */
     protected $_orderManagement;
+
     /**
      * MassDelete constructor.
      * @param Context $context
@@ -77,6 +78,7 @@ class MassDelete extends AbstractMassAction
      * @param OrderRepository $orderRepository
      * @param DataHelper $dataHelper
      * @param LoggerInterface $logger
+     * @param OrderManagementInterface $orderManagement
      */
     public function __construct(
         Context $context,
@@ -86,7 +88,8 @@ class MassDelete extends AbstractMassAction
         DataHelper $dataHelper,
         LoggerInterface $logger,
         OrderManagementInterface $orderManagement
-    ) {
+    )
+    {
         parent::__construct($context, $filter);
 
         $this->collectionFactory = $collectionFactory;
@@ -104,15 +107,12 @@ class MassDelete extends AbstractMassAction
     {
         if ($this->helper->isEnabled()) {
             $deleted = 0;
-
+            $status = array('processing', 'pending', 'fraud');
             /** @var OrderInterface $order */
             foreach ($collection->getItems() as $order) {
                 try {
                     if ($this->helper->versionCompare('2.3.0')) {
-                        if ($order->getStatus() === 'processing' ||
-                            $order->getStatus() === 'pending' ||
-                            $order->getStatus() === 'fraud'
-                        ) {
+                        if (in_array($order->getStatus(), $status)) {
                             $this->_orderManagement->cancel($order->getId());
                         }
                         if ($order->getStatus() === 'holded') {

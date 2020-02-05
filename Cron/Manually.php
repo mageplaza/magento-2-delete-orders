@@ -88,6 +88,7 @@ class Manually
      * @param State $state
      * @param Registry $registry
      * @param LoggerInterface $logger
+     * @param OrderManagementInterface $orderManagement
      */
     public function __construct(
         HelperData $helperData,
@@ -98,7 +99,8 @@ class Manually
         Registry $registry,
         LoggerInterface $logger,
         OrderManagementInterface $orderManagement
-    ) {
+    )
+    {
         $this->_helperData = $helperData;
         $this->_email = $email;
         $this->_storeManager = $storeManager;
@@ -110,10 +112,11 @@ class Manually
     }
 
     /**
-     * action cron send email
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function process()
     {
+        $status = array('processing', 'pending', 'fraud');
         foreach ($this->_storeManager->getStores() as $store) {
             $storeId = $store->getId();
             if (!$this->_helperData->isEnabled($storeId)) {
@@ -129,10 +132,7 @@ class Manually
                 foreach ($orderCollection->getItems() as $order) {
                     try {
                         if ($this->_helperData->versionCompare('2.3.0')) {
-                            if ($order->getStatus() === 'processing' ||
-                                $order->getStatus() === 'pending' ||
-                                $order->getStatus() === 'fraud'
-                            ) {
+                            if (in_array($order->getStatus(), $status)) {
                                 $this->_orderManagement->cancel($order->getId());
                             }
                             if ($order->getStatus() === 'holded') {
@@ -154,9 +154,9 @@ class Manually
                     }
 
                     $templateParams = [
-                        'num_order'     => $numOfOrders,
+                        'num_order' => $numOfOrders,
                         'success_order' => $numOfOrders - count($errorOrders),
-                        'error_order'   => count($errorOrders)
+                        'error_order' => count($errorOrders)
                     ];
 
                     $this->_email->sendEmailTemplate($templateParams, $storeId);

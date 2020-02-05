@@ -70,12 +70,16 @@ class Manually extends Action
      * @var StoreManagerInterface
      */
     protected $_storeManager;
+
     /**
      * Manually constructor.
      * @param Context $context
      * @param HelperData $helperData
      * @param OrderRepository $orderRepository
      * @param LoggerInterface $logger
+     * @param OrderManagementInterface $orderManagement
+     * @param Email $email
+     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         Context $context,
@@ -85,7 +89,8 @@ class Manually extends Action
         OrderManagementInterface $orderManagement,
         Email $email,
         StoreManagerInterface $storeManager
-    ) {
+    )
+    {
         $this->_helperData = $helperData;
         $this->orderRepository = $orderRepository;
         $this->logger = $logger;
@@ -103,7 +108,7 @@ class Manually extends Action
     {
         $resultRedirect = $this->resultRedirectFactory->create();
         $storeId = $this->getRequest()->getParam('store');
-
+        $status = array('processing', 'pending', 'fraud');
         $orderCollection = $this->_helperData->getMatchingOrders($storeId);
         if ($orderCollection->getSize()) {
             $successDelete = 0;
@@ -111,10 +116,7 @@ class Manually extends Action
             foreach ($orderCollection->getItems() as $order) {
                 try {
                     if ($this->_helperData->versionCompare('2.3.0')) {
-                        if ($order->getStatus() === 'processing' ||
-                            $order->getStatus() === 'pending' ||
-                            $order->getStatus() === 'fraud'
-                        ) {
+                        if (in_array($order->getStatus(), $status)) {
                             $this->_orderManagement->cancel($order->getId());
                         }
                         if ($order->getStatus() === 'holded') {

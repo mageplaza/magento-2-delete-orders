@@ -42,13 +42,14 @@ class Delete extends Order
     const ADMIN_RESOURCE = 'Magento_Sales::delete';
 
     /**
-     * @return $this|ResponseInterface|ResultInterface
+     * @return ResponseInterface|\Magento\Framework\Controller\Result\Redirect|ResultInterface
      */
     public function execute()
     {
         $resultRedirect = $this->resultRedirectFactory->create();
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $orderManagement = $objectManager->create('Magento\Sales\Api\OrderManagementInterface');
+        $status = array('processing', 'pending', 'fraud');
         $helper = $this->_objectManager->get(Data::class);
         if (!$helper->isEnabled()) {
             $this->messageManager->addError(__('Cannot delete the order.'));
@@ -62,10 +63,7 @@ class Delete extends Order
         if ($order) {
             try {
                 if ($helper->versionCompare('2.3.0')) {
-                    if ($order->getStatus() === 'processing' ||
-                        $order->getStatus() === 'pending' ||
-                        $order->getStatus() === 'fraud'
-                    ) {
+                    if (in_array($order->getStatus(), $status)) {
                         $orderManagement->cancel($order->getId());
                     }
                     if ($order->getStatus() === 'holded') {
