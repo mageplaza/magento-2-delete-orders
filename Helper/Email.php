@@ -52,7 +52,6 @@ class Email extends AbstractData
 
     /**
      * Email constructor.
-     *
      * @param Context $context
      * @param ObjectManagerInterface $objectManager
      * @param StoreManagerInterface $storeManager
@@ -65,7 +64,8 @@ class Email extends AbstractData
         StoreManagerInterface $storeManager,
         TransportBuilder $transportBuilder,
         HelperData $helperData
-    ) {
+    )
+    {
         $this->transportBuilder = $transportBuilder;
         $this->_helperData = $helperData;
 
@@ -75,7 +75,6 @@ class Email extends AbstractData
     /**
      * @param array $templateParams
      * @param null $storeId
-     *
      * @return $this
      */
     public function sendEmailTemplate($templateParams = [], $storeId = null)
