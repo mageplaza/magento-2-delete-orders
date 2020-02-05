@@ -64,6 +64,10 @@ class MassDelete extends AbstractMassAction
      * @var LoggerInterface
      */
     protected $logger;
+
+    /**
+     * @var OrderManagementInterface
+     */
     protected $_orderManagement;
     /**
      * MassDelete constructor.

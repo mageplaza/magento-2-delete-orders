@@ -81,12 +81,10 @@ class Email extends AbstractData
     public function sendEmailTemplate($templateParams = [], $storeId = null)
     {
 
-
         try {
             $toEmails = $this->getToEmail($storeId);
-            var_dump($storeId);
             foreach ($toEmails as $toEmail) {
-                var_dump(Area::AREA_FRONTEND);
+
                 $transport = $this->transportBuilder
                     ->setTemplateIdentifier($this->getTemplate($storeId))
                     ->setTemplateOptions(['area' => Area::AREA_FRONTEND, 'store' => $storeId])
@@ -98,8 +96,6 @@ class Email extends AbstractData
                 $transport->sendMessage();
             }
         } catch (Exception $e) {
-
-//            var_dump($e->getMessage());die('123');
             $this->_logger->critical($e->getMessage());
         }
 

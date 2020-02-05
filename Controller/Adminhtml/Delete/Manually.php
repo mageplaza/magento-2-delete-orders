@@ -55,8 +55,20 @@ class Manually extends Action
      * @var LoggerInterface
      */
     protected $logger;
+
+    /**
+     * @var OrderManagementInterface
+     */
     protected $_orderManagement;
+
+    /**
+     * @var Email
+     */
     protected $_email;
+
+    /**
+     * @var StoreManagerInterface
+     */
     protected $_storeManager;
     /**
      * Manually constructor.
@@ -121,24 +133,10 @@ class Manually extends Action
             }
 
             if ($successDelete) {
-//                $templateParams = [
-//                    'num_order'     => 1,
-//                    'success_order' => 1 ,
-//                    'error_order'   => 1
-//                ];
-//                var_dump($templateParams);
-//                foreach ($this->_storeManager->getStores() as $store) {
-//                    $storeIdTest = $store->getId();
-//                    var_dump($storeIdTest);
-//                    $this->_email->sendEmailTemplate($templateParams, $storeIdTest);
-//                }
-//                die('123');
                 $this->messageManager->addSuccessMessage(__('Success! ' . $successDelete . ' orders have been deleted'));
             }
 
             if (count($errorOrders)) {
-
-
                 $this->messageManager->addErrorMessage(__('The following orders cannot being deleted. %1', implode(', ', $errorOrders)));
             }
         } else {

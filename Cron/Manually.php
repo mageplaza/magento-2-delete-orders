@@ -73,6 +73,10 @@ class Manually
      * @var LoggerInterface
      */
     protected $logger;
+
+    /**
+     * @var OrderManagementInterface
+     */
     protected $_orderManagement;
 
     /**
@@ -110,10 +114,6 @@ class Manually
      */
     public function process()
     {
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log');
-        $logger = new \Zend\Log\Logger();
-        $logger->addWriter($writer);
-
         foreach ($this->_storeManager->getStores() as $store) {
             $storeId = $store->getId();
             if (!$this->_helperData->isEnabled($storeId)) {
@@ -141,7 +141,6 @@ class Manually
                             }
                         }
                         $this->orderRepository->delete($order);
-//                        $this->_helperData->deleteRecord(reset($orderIds));
                         $this->_helperData->deleteRecord($order->getId());
                     } catch (Exception $e) {
                         $errorOrders[$order->getId()] = $order->getIncrementId();
@@ -159,11 +158,7 @@ class Manually
                         'success_order' => $numOfOrders - count($errorOrders),
                         'error_order'   => count($errorOrders)
                     ];
-                    $logger->info($numOfOrders);
-                    $logger->info($numOfOrders - count($errorOrders));
-                    $logger->info(count($errorOrders));
-                    $logger->info($storeId);
-                    $logger->info('--OK--');
+
                     $this->_email->sendEmailTemplate($templateParams, $storeId);
                 }
             }
