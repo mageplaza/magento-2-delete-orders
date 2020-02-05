@@ -24,6 +24,7 @@
     <group id="default">
         <job name="delete_orders_cron_manually_email" instance="Mageplaza\DeleteOrders\Cron\Manually" method="process">
             <config_path>crontab/default/jobs/delete_orders_cron_manually_email/schedule/cron_expr</config_path>
+<!--            <schedule>0 16 * * *</schedule>-->
         </job>
     </group>
 </config>

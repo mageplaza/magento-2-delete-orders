@@ -47,7 +47,8 @@ class Delete extends Order
     public function execute()
     {
         $resultRedirect = $this->resultRedirectFactory->create();
-
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $orderManagement = $objectManager->create('Magento\Sales\Api\OrderManagementInterface');
         $helper = $this->_objectManager->get(Data::class);
         if (!$helper->isEnabled()) {
             $this->messageManager->addError(__('Cannot delete the order.'));
@@ -60,6 +61,18 @@ class Delete extends Order
         $order = $this->_initOrder();
         if ($order) {
             try {
+                if ($helper->versionCompare('2.3.0')) {
+                    if ($order->getStatus() === 'processing' ||
+                        $order->getStatus() === 'pending' ||
+                        $order->getStatus() === 'fraud'
+                    ) {
+                        $orderManagement->cancel($order->getId());
+                    }
+                    if ($order->getStatus() === 'holded') {
+                        $orderManagement->unHold($order->getId());
+                        $orderManagement->cancel($order->getId());
+                    }
+                }
                 /** delete order*/
                 $this->orderRepository->delete($order);
                 /** delete order data on grid report data related*/

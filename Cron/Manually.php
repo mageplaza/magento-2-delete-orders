@@ -30,6 +30,7 @@ use Magento\Store\Model\StoreManagerInterface;
 use Mageplaza\DeleteOrders\Helper\Data as HelperData;
 use Mageplaza\DeleteOrders\Helper\Email;
 use Psr\Log\LoggerInterface;
+use Magento\Sales\Api\OrderManagementInterface;
 
 /**
  * Class Manually
@@ -72,6 +73,7 @@ class Manually
      * @var LoggerInterface
      */
     protected $logger;
+    protected $_orderManagement;
 
     /**
      * Manually constructor.
@@ -90,7 +92,8 @@ class Manually
         OrderRepository $orderRepository,
         state $state,
         Registry $registry,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        OrderManagementInterface $orderManagement
     ) {
         $this->_helperData = $helperData;
         $this->_email = $email;
@@ -99,6 +102,7 @@ class Manually
         $this->state = $state;
         $this->registry = $registry;
         $this->logger = $logger;
+        $this->_orderManagement = $orderManagement;
     }
 
     /**
@@ -106,6 +110,10 @@ class Manually
      */
     public function process()
     {
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/test.log');
+        $logger = new \Zend\Log\Logger();
+        $logger->addWriter($writer);
+
         foreach ($this->_storeManager->getStores() as $store) {
             $storeId = $store->getId();
             if (!$this->_helperData->isEnabled($storeId)) {
@@ -120,8 +128,21 @@ class Manually
                 $errorOrders = [];
                 foreach ($orderCollection->getItems() as $order) {
                     try {
+                        if ($this->_helperData->versionCompare('2.3.0')) {
+                            if ($order->getStatus() === 'processing' ||
+                                $order->getStatus() === 'pending' ||
+                                $order->getStatus() === 'fraud'
+                            ) {
+                                $this->_orderManagement->cancel($order->getId());
+                            }
+                            if ($order->getStatus() === 'holded') {
+                                $this->_orderManagement->unHold($order->getId());
+                                $this->_orderManagement->cancel($order->getId());
+                            }
+                        }
                         $this->orderRepository->delete($order);
-                        $this->_helperData->deleteRecord(reset($orderIds));
+//                        $this->_helperData->deleteRecord(reset($orderIds));
+                        $this->_helperData->deleteRecord($order->getId());
                     } catch (Exception $e) {
                         $errorOrders[$order->getId()] = $order->getIncrementId();
                         $this->logger->error($e->getMessage());
@@ -136,9 +157,13 @@ class Manually
                     $templateParams = [
                         'num_order'     => $numOfOrders,
                         'success_order' => $numOfOrders - count($errorOrders),
-                        'error_order'   => $errorOrders
+                        'error_order'   => count($errorOrders)
                     ];
-
+                    $logger->info($numOfOrders);
+                    $logger->info($numOfOrders - count($errorOrders));
+                    $logger->info(count($errorOrders));
+                    $logger->info($storeId);
+                    $logger->info('--OK--');
                     $this->_email->sendEmailTemplate($templateParams, $storeId);
                 }
             }

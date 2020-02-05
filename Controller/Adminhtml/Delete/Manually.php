@@ -30,6 +30,9 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Sales\Model\OrderRepository;
 use Mageplaza\DeleteOrders\Helper\Data as HelperData;
 use Psr\Log\LoggerInterface;
+use Magento\Sales\Api\OrderManagementInterface;
+use Mageplaza\DeleteOrders\Helper\Email;
+use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Class Manually
@@ -52,7 +55,9 @@ class Manually extends Action
      * @var LoggerInterface
      */
     protected $logger;
-
+    protected $_orderManagement;
+    protected $_email;
+    protected $_storeManager;
     /**
      * Manually constructor.
      * @param Context $context
@@ -64,11 +69,17 @@ class Manually extends Action
         Context $context,
         HelperData $helperData,
         OrderRepository $orderRepository,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        OrderManagementInterface $orderManagement,
+        Email $email,
+        StoreManagerInterface $storeManager
     ) {
         $this->_helperData = $helperData;
         $this->orderRepository = $orderRepository;
         $this->logger = $logger;
+        $this->_orderManagement = $orderManagement;
+        $this->_email = $email;
+        $this->_storeManager = $storeManager;
 
         parent::__construct($context);
     }
@@ -87,8 +98,20 @@ class Manually extends Action
             $errorOrders = [];
             foreach ($orderCollection->getItems() as $order) {
                 try {
+                    if ($this->_helperData->versionCompare('2.3.0')) {
+                        if ($order->getStatus() === 'processing' ||
+                            $order->getStatus() === 'pending' ||
+                            $order->getStatus() === 'fraud'
+                        ) {
+                            $this->_orderManagement->cancel($order->getId());
+                        }
+                        if ($order->getStatus() === 'holded') {
+                            $this->_orderManagement->unHold($order->getId());
+                            $this->_orderManagement->cancel($order->getId());
+                        }
+                    }
                     $this->orderRepository->delete($order);
-                    $this->_helperData->deleteRecord(reset($orderIds));
+                    $this->_helperData->deleteRecord($order->getId());
 
                     $successDelete++;
                 } catch (Exception $e) {
@@ -98,11 +121,25 @@ class Manually extends Action
             }
 
             if ($successDelete) {
+//                $templateParams = [
+//                    'num_order'     => 1,
+//                    'success_order' => 1 ,
+//                    'error_order'   => 1
+//                ];
+//                var_dump($templateParams);
+//                foreach ($this->_storeManager->getStores() as $store) {
+//                    $storeIdTest = $store->getId();
+//                    var_dump($storeIdTest);
+//                    $this->_email->sendEmailTemplate($templateParams, $storeIdTest);
+//                }
+//                die('123');
                 $this->messageManager->addSuccessMessage(__('Success! ' . $successDelete . ' orders have been deleted'));
             }
 
             if (count($errorOrders)) {
-                $this->messageManager->addSuccessMessage(__('The following orders cannot being deleted. %1', implode(', ', $errorOrders)));
+
+
+                $this->messageManager->addErrorMessage(__('The following orders cannot being deleted. %1', implode(', ', $errorOrders)));
             }
         } else {
             $this->messageManager->addNoticeMessage(__('No order has been deleted!'));

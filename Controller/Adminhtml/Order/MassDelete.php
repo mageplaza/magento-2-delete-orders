@@ -35,6 +35,7 @@ use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Ui\Component\MassAction\Filter;
 use Mageplaza\DeleteOrders\Helper\Data as DataHelper;
 use Psr\Log\LoggerInterface;
+use Magento\Sales\Api\OrderManagementInterface;
 
 /**
  * Class MassDelete
@@ -63,7 +64,7 @@ class MassDelete extends AbstractMassAction
      * @var LoggerInterface
      */
     protected $logger;
-
+    protected $_orderManagement;
     /**
      * MassDelete constructor.
      * @param Context $context
@@ -79,7 +80,8 @@ class MassDelete extends AbstractMassAction
         CollectionFactory $collectionFactory,
         OrderRepository $orderRepository,
         DataHelper $dataHelper,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        OrderManagementInterface $orderManagement
     ) {
         parent::__construct($context, $filter);
 
@@ -87,6 +89,7 @@ class MassDelete extends AbstractMassAction
         $this->orderRepository = $orderRepository;
         $this->helper = $dataHelper;
         $this->logger = $logger;
+        $this->_orderManagement = $orderManagement;
     }
 
     /**
@@ -101,6 +104,18 @@ class MassDelete extends AbstractMassAction
             /** @var OrderInterface $order */
             foreach ($collection->getItems() as $order) {
                 try {
+                    if ($this->helper->versionCompare('2.3.0')) {
+                        if ($order->getStatus() === 'processing' ||
+                            $order->getStatus() === 'pending' ||
+                            $order->getStatus() === 'fraud'
+                        ) {
+                            $this->_orderManagement->cancel($order->getId());
+                        }
+                        if ($order->getStatus() === 'holded') {
+                            $this->_orderManagement->unHold($order->getId());
+                            $this->_orderManagement->cancel($order->getId());
+                        }
+                    }
                     /** delete order*/
                     $this->orderRepository->delete($order);
                     /** delete order data on grid report data related*/
