@@ -73,6 +73,7 @@ class Manually extends Action
 
     /**
      * Manually constructor.
+     *
      * @param Context $context
      * @param HelperData $helperData
      * @param OrderRepository $orderRepository
@@ -89,14 +90,13 @@ class Manually extends Action
         OrderManagementInterface $orderManagement,
         Email $email,
         StoreManagerInterface $storeManager
-    )
-    {
-        $this->_helperData = $helperData;
-        $this->orderRepository = $orderRepository;
-        $this->logger = $logger;
+    ) {
+        $this->_helperData      = $helperData;
+        $this->orderRepository  = $orderRepository;
+        $this->logger           = $logger;
         $this->_orderManagement = $orderManagement;
-        $this->_email = $email;
-        $this->_storeManager = $storeManager;
+        $this->_email           = $email;
+        $this->_storeManager    = $storeManager;
 
         parent::__construct($context);
     }
@@ -106,17 +106,19 @@ class Manually extends Action
      */
     public function execute()
     {
-        $resultRedirect = $this->resultRedirectFactory->create();
-        $storeId = $this->getRequest()->getParam('store');
-        $status = array('processing', 'pending', 'fraud');
+        $resultRedirect  = $this->resultRedirectFactory->create();
+        $storeId         = $this->getRequest()->getParam('store');
+        $status          = ['processing', 'pending', 'fraud'];
         $orderCollection = $this->_helperData->getMatchingOrders($storeId);
+
         if ($orderCollection->getSize()) {
             $successDelete = 0;
-            $errorOrders = [];
+            $errorOrders   = [];
+
             foreach ($orderCollection->getItems() as $order) {
                 try {
                     if ($this->_helperData->versionCompare('2.3.0')) {
-                        if (in_array($order->getStatus(), $status)) {
+                        if (in_array($order->getStatus(), $status, true)) {
                             $this->_orderManagement->cancel($order->getId());
                         }
                         if ($order->getStatus() === 'holded') {
@@ -124,9 +126,9 @@ class Manually extends Action
                             $this->_orderManagement->cancel($order->getId());
                         }
                     }
+
                     $this->orderRepository->delete($order);
                     $this->_helperData->deleteRecord($order->getId());
-
                     $successDelete++;
                 } catch (Exception $e) {
                     $errorOrders[$order->getId()] = $order->getIncrementId();

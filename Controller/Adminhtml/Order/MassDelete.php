@@ -72,6 +72,7 @@ class MassDelete extends AbstractMassAction
 
     /**
      * MassDelete constructor.
+     *
      * @param Context $context
      * @param Filter $filter
      * @param CollectionFactory $collectionFactory
@@ -88,31 +89,31 @@ class MassDelete extends AbstractMassAction
         DataHelper $dataHelper,
         LoggerInterface $logger,
         OrderManagementInterface $orderManagement
-    )
-    {
+    ) {
         parent::__construct($context, $filter);
 
         $this->collectionFactory = $collectionFactory;
-        $this->orderRepository = $orderRepository;
-        $this->helper = $dataHelper;
-        $this->logger = $logger;
-        $this->_orderManagement = $orderManagement;
+        $this->orderRepository   = $orderRepository;
+        $this->helper            = $dataHelper;
+        $this->logger            = $logger;
+        $this->_orderManagement  = $orderManagement;
     }
 
     /**
      * @param AbstractCollection $collection
+     *
      * @return Redirect|ResponseInterface|ResultInterface
      */
     protected function massAction(AbstractCollection $collection)
     {
         if ($this->helper->isEnabled()) {
             $deleted = 0;
-            $status = array('processing', 'pending', 'fraud');
+            $status  = ['processing', 'pending', 'fraud'];
             /** @var OrderInterface $order */
             foreach ($collection->getItems() as $order) {
                 try {
                     if ($this->helper->versionCompare('2.3.0')) {
-                        if (in_array($order->getStatus(), $status)) {
+                        if (in_array($order->getStatus(), $status, true)) {
                             $this->_orderManagement->cancel($order->getId());
                         }
                         if ($order->getStatus() === 'holded') {
@@ -131,6 +132,7 @@ class MassDelete extends AbstractMassAction
                     $this->messageManager->addErrorMessage(__('Cannot delete order #%1. Please try again later.', $order->getIncrementId()));
                 }
             }
+
             if ($deleted) {
                 $this->messageManager->addSuccessMessage(__('A total of %1 order(s) has been deleted.', $deleted));
             }

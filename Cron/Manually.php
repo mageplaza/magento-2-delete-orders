@@ -24,6 +24,7 @@ namespace Mageplaza\DeleteOrders\Cron;
 use Exception;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Registry;
 use Magento\Sales\Model\OrderRepository;
 use Magento\Store\Model\StoreManagerInterface;
@@ -60,7 +61,7 @@ class Manually
     protected $orderRepository;
 
     /**
-     * @var state
+     * @var State
      */
     protected $state;
 
@@ -81,6 +82,7 @@ class Manually
 
     /**
      * Manually constructor.
+     *
      * @param HelperData $helperData
      * @param Email $email
      * @param StoreManagerInterface $storeManager
@@ -99,24 +101,23 @@ class Manually
         Registry $registry,
         LoggerInterface $logger,
         OrderManagementInterface $orderManagement
-    )
-    {
-        $this->_helperData = $helperData;
-        $this->_email = $email;
-        $this->_storeManager = $storeManager;
-        $this->orderRepository = $orderRepository;
-        $this->state = $state;
-        $this->registry = $registry;
-        $this->logger = $logger;
+    ) {
+        $this->_helperData      = $helperData;
+        $this->_email           = $email;
+        $this->_storeManager    = $storeManager;
+        $this->orderRepository  = $orderRepository;
+        $this->state            = $state;
+        $this->registry         = $registry;
+        $this->logger           = $logger;
         $this->_orderManagement = $orderManagement;
     }
 
     /**
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function process()
     {
-        $status = array('processing', 'pending', 'fraud');
+        $status = ['processing', 'pending', 'fraud'];
         foreach ($this->_storeManager->getStores() as $store) {
             $storeId = $store->getId();
             if (!$this->_helperData->isEnabled($storeId)) {
@@ -127,12 +128,12 @@ class Manually
             if ($numOfOrders = $orderCollection->getSize()) {
                 $this->registry->unregister('isSecureArea');
                 $this->registry->register('isSecureArea', true);
-
                 $errorOrders = [];
+
                 foreach ($orderCollection->getItems() as $order) {
                     try {
                         if ($this->_helperData->versionCompare('2.3.0')) {
-                            if (in_array($order->getStatus(), $status)) {
+                            if (in_array($order->getStatus(), $status, true)) {
                                 $this->_orderManagement->cancel($order->getId());
                             }
                             if ($order->getStatus() === 'holded') {
@@ -154,9 +155,9 @@ class Manually
                     }
 
                     $templateParams = [
-                        'num_order' => $numOfOrders,
+                        'num_order'     => $numOfOrders,
                         'success_order' => $numOfOrders - count($errorOrders),
-                        'error_order' => count($errorOrders)
+                        'error_order'   => count($errorOrders)
                     ];
 
                     $this->_email->sendEmailTemplate($templateParams, $storeId);
