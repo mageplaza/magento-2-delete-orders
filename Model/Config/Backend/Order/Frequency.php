@@ -90,9 +90,9 @@ class Frequency extends Value
         $runModelPath = '',
         array $data = []
     ) {
-        $this->_runModelPath = $runModelPath;
+        $this->_runModelPath       = $runModelPath;
         $this->_configValueFactory = $configValueFactory;
-        $this->messageManager = $messageManager;
+        $this->messageManager      = $messageManager;
 
         parent::__construct(
             $context,
@@ -110,13 +110,13 @@ class Frequency extends Value
      */
     public function afterSave()
     {
-        $time = $this->getData('groups/schedule/fields/time/value');
+        $time      = $this->getData('groups/schedule/fields/time/value');
         $frequency = $this->getData('groups/schedule/fields/schedule_for/value');
 
         if ($frequency !== ValueConfig::DISABLE) {
             $cronExprArray = [
-                (int)$time[1], //Minute
-                (int)$time[0], //Hour
+                (int) $time[1], //Minute
+                (int) $time[0], //Hour
                 $frequency === \Magento\Cron\Model\Config\Source\Frequency::CRON_MONTHLY ? '1' : '*', //Day of the Month
                 '*', //Month of the Year
                 $frequency === \Magento\Cron\Model\Config\Source\Frequency::CRON_WEEKLY ? '1' : '*', //Day of the Week

@@ -26,12 +26,12 @@ use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Registry;
+use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Model\OrderRepository;
 use Magento\Store\Model\StoreManagerInterface;
 use Mageplaza\DeleteOrders\Helper\Data as HelperData;
 use Mageplaza\DeleteOrders\Helper\Email;
 use Psr\Log\LoggerInterface;
-use Magento\Sales\Api\OrderManagementInterface;
 
 /**
  * Class Manually

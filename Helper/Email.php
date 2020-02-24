@@ -83,7 +83,6 @@ class Email extends AbstractData
         try {
             $toEmails = $this->getToEmail($storeId);
             foreach ($toEmails as $toEmail) {
-
                 $transport = $this->transportBuilder
                     ->setTemplateIdentifier($this->getTemplate($storeId))
                     ->setTemplateOptions(['area' => Area::AREA_FRONTEND, 'store' => $storeId])
@@ -124,7 +123,7 @@ class Email extends AbstractData
     public function isEnabledEmail($storeId = null)
     {
         if ($this->_helperData->isEnabled()) {
-            return (bool)$this->getConfigEmail('enabled', $storeId);
+            return (bool) $this->getConfigEmail('enabled', $storeId);
         }
 
         return false;

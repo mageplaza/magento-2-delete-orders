@@ -62,7 +62,7 @@ class Data extends AbstractData
         CollectionFactory $orderCollectionFactory,
         OrderFactory $orderResourceFactory
     ) {
-        $this->orderResourceFactory = $orderResourceFactory;
+        $this->orderResourceFactory   = $orderResourceFactory;
         $this->orderCollectionFactory = $orderCollectionFactory;
 
         parent::__construct($context, $objectManager, $storeManager);
@@ -73,6 +73,7 @@ class Data extends AbstractData
      *
      * @param null $storeId
      * @param int $limit
+     *
      * @return Collection
      */
     public function getMatchingOrders($storeId = null, $limit = 1000)
@@ -117,7 +118,7 @@ class Data extends AbstractData
     public function deleteRecord($orderId)
     {
         /** @var Order $resource */
-        $resource = $this->orderResourceFactory->create();
+        $resource   = $this->orderResourceFactory->create();
         $connection = $resource->getConnection();
 
         /** delete invoice grid record via resource model*/

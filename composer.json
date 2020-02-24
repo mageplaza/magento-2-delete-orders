@@ -2,10 +2,10 @@
   "name": "mageplaza/module-delete-orders",
   "description": "Magento 2 Delete Orders extension",
   "require": {
-    "mageplaza/module-core": "^1.4.3"
+    "mageplaza/module-core": "^1.4.5"
   },
   "type": "magento2-module",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "license": "proprietary",
   "authors": [
     {

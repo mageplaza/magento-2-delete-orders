@@ -27,12 +27,12 @@ use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Sales\Model\OrderRepository;
-use Mageplaza\DeleteOrders\Helper\Data as HelperData;
-use Psr\Log\LoggerInterface;
 use Magento\Sales\Api\OrderManagementInterface;
-use Mageplaza\DeleteOrders\Helper\Email;
+use Magento\Sales\Model\OrderRepository;
 use Magento\Store\Model\StoreManagerInterface;
+use Mageplaza\DeleteOrders\Helper\Data as HelperData;
+use Mageplaza\DeleteOrders\Helper\Email;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class Manually
@@ -141,7 +141,10 @@ class Manually extends Action
             }
 
             if (count($errorOrders)) {
-                $this->messageManager->addErrorMessage(__('The following orders cannot being deleted. %1', implode(', ', $errorOrders)));
+                $this->messageManager->addErrorMessage(__(
+                    'The following orders cannot being deleted. %1',
+                    implode(', ', $errorOrders)
+                ));
             }
         } else {
             $this->messageManager->addNoticeMessage(__('No order has been deleted!'));

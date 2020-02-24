@@ -31,7 +31,7 @@ use Magento\Framework\Option\ArrayInterface;
 class Country implements ArrayInterface
 {
     const SPECIFIC = '1';
-    const ALL = '2';
+    const ALL      = '2';
 
     /**
      * Return array of options as value-label pairs

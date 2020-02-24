@@ -22,7 +22,9 @@
 namespace Mageplaza\DeleteOrders\Controller\Adminhtml\Order;
 
 use Exception;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Controller\Adminhtml\Order;
@@ -42,15 +44,15 @@ class Delete extends Order
     const ADMIN_RESOURCE = 'Magento_Sales::delete';
 
     /**
-     * @return ResponseInterface|\Magento\Framework\Controller\Result\Redirect|ResultInterface
+     * @return ResponseInterface|Redirect|ResultInterface
      */
     public function execute()
     {
-        $resultRedirect = $this->resultRedirectFactory->create();
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $resultRedirect  = $this->resultRedirectFactory->create();
+        $objectManager   = ObjectManager::getInstance();
         $orderManagement = $objectManager->create('Magento\Sales\Api\OrderManagementInterface');
-        $status = array('processing', 'pending', 'fraud');
-        $helper = $this->_objectManager->get(Data::class);
+        $status          = ['processing', 'pending', 'fraud'];
+        $helper          = $this->_objectManager->get(Data::class);
         if (!$helper->isEnabled()) {
             $this->messageManager->addError(__('Cannot delete the order.'));
 

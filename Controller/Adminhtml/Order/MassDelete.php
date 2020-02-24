@@ -29,13 +29,13 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Controller\Adminhtml\Order\AbstractMassAction;
 use Magento\Sales\Model\OrderRepository;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Ui\Component\MassAction\Filter;
 use Mageplaza\DeleteOrders\Helper\Data as DataHelper;
 use Psr\Log\LoggerInterface;
-use Magento\Sales\Api\OrderManagementInterface;
 
 /**
  * Class MassDelete
@@ -129,7 +129,10 @@ class MassDelete extends AbstractMassAction
                     $deleted++;
                 } catch (Exception $e) {
                     $this->logger->critical($e);
-                    $this->messageManager->addErrorMessage(__('Cannot delete order #%1. Please try again later.', $order->getIncrementId()));
+                    $this->messageManager->addErrorMessage(__(
+                        'Cannot delete order #%1. Please try again later.',
+                        $order->getIncrementId()
+                    ));
                 }
             }
 
