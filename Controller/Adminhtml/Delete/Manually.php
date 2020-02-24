@@ -27,8 +27,11 @@ use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultInterface;
+use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Model\OrderRepository;
+use Magento\Store\Model\StoreManagerInterface;
 use Mageplaza\DeleteOrders\Helper\Data as HelperData;
+use Mageplaza\DeleteOrders\Helper\Email;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -54,21 +57,46 @@ class Manually extends Action
     protected $logger;
 
     /**
+     * @var OrderManagementInterface
+     */
+    protected $_orderManagement;
+
+    /**
+     * @var Email
+     */
+    protected $_email;
+
+    /**
+     * @var StoreManagerInterface
+     */
+    protected $_storeManager;
+
+    /**
      * Manually constructor.
+     *
      * @param Context $context
      * @param HelperData $helperData
      * @param OrderRepository $orderRepository
      * @param LoggerInterface $logger
+     * @param OrderManagementInterface $orderManagement
+     * @param Email $email
+     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         Context $context,
         HelperData $helperData,
         OrderRepository $orderRepository,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        OrderManagementInterface $orderManagement,
+        Email $email,
+        StoreManagerInterface $storeManager
     ) {
-        $this->_helperData = $helperData;
-        $this->orderRepository = $orderRepository;
-        $this->logger = $logger;
+        $this->_helperData      = $helperData;
+        $this->orderRepository  = $orderRepository;
+        $this->logger           = $logger;
+        $this->_orderManagement = $orderManagement;
+        $this->_email           = $email;
+        $this->_storeManager    = $storeManager;
 
         parent::__construct($context);
     }
@@ -78,18 +106,29 @@ class Manually extends Action
      */
     public function execute()
     {
-        $resultRedirect = $this->resultRedirectFactory->create();
-        $storeId = $this->getRequest()->getParam('store');
-
+        $resultRedirect  = $this->resultRedirectFactory->create();
+        $storeId         = $this->getRequest()->getParam('store');
+        $status          = ['processing', 'pending', 'fraud'];
         $orderCollection = $this->_helperData->getMatchingOrders($storeId);
+
         if ($orderCollection->getSize()) {
             $successDelete = 0;
-            $errorOrders = [];
+            $errorOrders   = [];
+
             foreach ($orderCollection->getItems() as $order) {
                 try {
-                    $this->orderRepository->delete($order);
-                    $this->_helperData->deleteRecord(reset($orderIds));
+                    if ($this->_helperData->versionCompare('2.3.0')) {
+                        if (in_array($order->getStatus(), $status, true)) {
+                            $this->_orderManagement->cancel($order->getId());
+                        }
+                        if ($order->getStatus() === 'holded') {
+                            $this->_orderManagement->unHold($order->getId());
+                            $this->_orderManagement->cancel($order->getId());
+                        }
+                    }
 
+                    $this->orderRepository->delete($order);
+                    $this->_helperData->deleteRecord($order->getId());
                     $successDelete++;
                 } catch (Exception $e) {
                     $errorOrders[$order->getId()] = $order->getIncrementId();
@@ -102,7 +141,10 @@ class Manually extends Action
             }
 
             if (count($errorOrders)) {
-                $this->messageManager->addSuccessMessage(__('The following orders cannot being deleted. %1', implode(', ', $errorOrders)));
+                $this->messageManager->addErrorMessage(__(
+                    'The following orders cannot being deleted. %1',
+                    implode(', ', $errorOrders)
+                ));
             }
         } else {
             $this->messageManager->addNoticeMessage(__('No order has been deleted!'));

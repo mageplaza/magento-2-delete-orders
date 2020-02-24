@@ -22,7 +22,9 @@
 namespace Mageplaza\DeleteOrders\Controller\Adminhtml\Order;
 
 use Exception;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Controller\Adminhtml\Order;
@@ -42,13 +44,15 @@ class Delete extends Order
     const ADMIN_RESOURCE = 'Magento_Sales::delete';
 
     /**
-     * @return $this|ResponseInterface|ResultInterface
+     * @return ResponseInterface|Redirect|ResultInterface
      */
     public function execute()
     {
-        $resultRedirect = $this->resultRedirectFactory->create();
-
-        $helper = $this->_objectManager->get(Data::class);
+        $resultRedirect  = $this->resultRedirectFactory->create();
+        $objectManager   = ObjectManager::getInstance();
+        $orderManagement = $objectManager->create('Magento\Sales\Api\OrderManagementInterface');
+        $status          = ['processing', 'pending', 'fraud'];
+        $helper          = $this->_objectManager->get(Data::class);
         if (!$helper->isEnabled()) {
             $this->messageManager->addError(__('Cannot delete the order.'));
 
@@ -60,6 +64,15 @@ class Delete extends Order
         $order = $this->_initOrder();
         if ($order) {
             try {
+                if ($helper->versionCompare('2.3.0')) {
+                    if (in_array($order->getStatus(), $status)) {
+                        $orderManagement->cancel($order->getId());
+                    }
+                    if ($order->getStatus() === 'holded') {
+                        $orderManagement->unHold($order->getId());
+                        $orderManagement->cancel($order->getId());
+                    }
+                }
                 /** delete order*/
                 $this->orderRepository->delete($order);
                 /** delete order data on grid report data related*/

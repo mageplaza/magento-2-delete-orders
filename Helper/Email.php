@@ -37,7 +37,7 @@ use Mageplaza\DeleteOrders\Helper\Data as HelperData;
  */
 class Email extends AbstractData
 {
-    const CONFIG_MODULE_PATH = 'delete_orders';
+    const CONFIG_MODULE_PATH  = 'delete_orders';
     const EMAIL_CONFIGURATION = '/email';
 
     /**
@@ -67,7 +67,7 @@ class Email extends AbstractData
         HelperData $helperData
     ) {
         $this->transportBuilder = $transportBuilder;
-        $this->_helperData = $helperData;
+        $this->_helperData      = $helperData;
 
         parent::__construct($context, $objectManager, $storeManager);
     }
@@ -82,7 +82,6 @@ class Email extends AbstractData
     {
         try {
             $toEmails = $this->getToEmail($storeId);
-
             foreach ($toEmails as $toEmail) {
                 $transport = $this->transportBuilder
                     ->setTemplateIdentifier($this->getTemplate($storeId))
@@ -124,7 +123,7 @@ class Email extends AbstractData
     public function isEnabledEmail($storeId = null)
     {
         if ($this->_helperData->isEnabled()) {
-            return (bool)$this->getConfigEmail('enabled', $storeId);
+            return (bool) $this->getConfigEmail('enabled', $storeId);
         }
 
         return false;

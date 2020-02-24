@@ -43,6 +43,7 @@ class AddDeleteAction
 
     /**
      * AddDeleteAction constructor.
+     *
      * @param Data $helper
      * @param AuthorizationInterface $authorization
      */
@@ -50,13 +51,14 @@ class AddDeleteAction
         Data $helper,
         AuthorizationInterface $authorization
     ) {
-        $this->helper = $helper;
+        $this->helper         = $helper;
         $this->_authorization = $authorization;
     }
 
     /**
      * @param MassAction $object
      * @param $result
+     *
      * @return mixed
      */
     public function afterGetChildComponents(MassAction $object, $result)

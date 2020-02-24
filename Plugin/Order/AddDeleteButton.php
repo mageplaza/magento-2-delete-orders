@@ -44,6 +44,7 @@ class AddDeleteButton
 
     /**
      * AddDeleteButton constructor.
+     *
      * @param Data $helper
      * @param AuthorizationInterface $authorization
      */
@@ -51,13 +52,14 @@ class AddDeleteButton
         Data $helper,
         AuthorizationInterface $authorization
     ) {
-        $this->helper = $helper;
+        $this->helper         = $helper;
         $this->_authorization = $authorization;
     }
 
     /**
      * @param View $object
      * @param LayoutInterface $layout
+     *
      * @return array
      */
     public function beforeSetLayout(View $object, LayoutInterface $layout)

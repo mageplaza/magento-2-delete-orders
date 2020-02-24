@@ -63,6 +63,7 @@ class Delete extends Command
 
     /**
      * Delete constructor.
+     *
      * @param HelperData $helperData
      * @param OrderRepository $orderRepository
      * @param State $state
@@ -76,10 +77,10 @@ class Delete extends Command
         Registry $registry,
         $name = null
     ) {
-        $this->_helperData = $helperData;
+        $this->_helperData     = $helperData;
         $this->orderRepository = $orderRepository;
-        $this->state = $state;
-        $this->registry = $registry;
+        $this->state           = $state;
+        $this->registry        = $registry;
 
         parent::__construct($name);
     }

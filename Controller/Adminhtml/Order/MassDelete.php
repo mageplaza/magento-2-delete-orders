@@ -29,6 +29,7 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Controller\Adminhtml\Order\AbstractMassAction;
 use Magento\Sales\Model\OrderRepository;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
@@ -65,13 +66,20 @@ class MassDelete extends AbstractMassAction
     protected $logger;
 
     /**
+     * @var OrderManagementInterface
+     */
+    protected $_orderManagement;
+
+    /**
      * MassDelete constructor.
+     *
      * @param Context $context
      * @param Filter $filter
      * @param CollectionFactory $collectionFactory
      * @param OrderRepository $orderRepository
      * @param DataHelper $dataHelper
      * @param LoggerInterface $logger
+     * @param OrderManagementInterface $orderManagement
      */
     public function __construct(
         Context $context,
@@ -79,28 +87,40 @@ class MassDelete extends AbstractMassAction
         CollectionFactory $collectionFactory,
         OrderRepository $orderRepository,
         DataHelper $dataHelper,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        OrderManagementInterface $orderManagement
     ) {
         parent::__construct($context, $filter);
 
         $this->collectionFactory = $collectionFactory;
-        $this->orderRepository = $orderRepository;
-        $this->helper = $dataHelper;
-        $this->logger = $logger;
+        $this->orderRepository   = $orderRepository;
+        $this->helper            = $dataHelper;
+        $this->logger            = $logger;
+        $this->_orderManagement  = $orderManagement;
     }
 
     /**
      * @param AbstractCollection $collection
+     *
      * @return Redirect|ResponseInterface|ResultInterface
      */
     protected function massAction(AbstractCollection $collection)
     {
         if ($this->helper->isEnabled()) {
             $deleted = 0;
-
+            $status  = ['processing', 'pending', 'fraud'];
             /** @var OrderInterface $order */
             foreach ($collection->getItems() as $order) {
                 try {
+                    if ($this->helper->versionCompare('2.3.0')) {
+                        if (in_array($order->getStatus(), $status, true)) {
+                            $this->_orderManagement->cancel($order->getId());
+                        }
+                        if ($order->getStatus() === 'holded') {
+                            $this->_orderManagement->unHold($order->getId());
+                            $this->_orderManagement->cancel($order->getId());
+                        }
+                    }
                     /** delete order*/
                     $this->orderRepository->delete($order);
                     /** delete order data on grid report data related*/
@@ -109,9 +129,13 @@ class MassDelete extends AbstractMassAction
                     $deleted++;
                 } catch (Exception $e) {
                     $this->logger->critical($e);
-                    $this->messageManager->addErrorMessage(__('Cannot delete order #%1. Please try again later.', $order->getIncrementId()));
+                    $this->messageManager->addErrorMessage(__(
+                        'Cannot delete order #%1. Please try again later.',
+                        $order->getIncrementId()
+                    ));
                 }
             }
+
             if ($deleted) {
                 $this->messageManager->addSuccessMessage(__('A total of %1 order(s) has been deleted.', $deleted));
             }

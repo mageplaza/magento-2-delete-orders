@@ -24,7 +24,9 @@ namespace Mageplaza\DeleteOrders\Cron;
 use Exception;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Registry;
+use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Model\OrderRepository;
 use Magento\Store\Model\StoreManagerInterface;
 use Mageplaza\DeleteOrders\Helper\Data as HelperData;
@@ -59,7 +61,7 @@ class Manually
     protected $orderRepository;
 
     /**
-     * @var state
+     * @var State
      */
     protected $state;
 
@@ -74,7 +76,13 @@ class Manually
     protected $logger;
 
     /**
+     * @var OrderManagementInterface
+     */
+    protected $_orderManagement;
+
+    /**
      * Manually constructor.
+     *
      * @param HelperData $helperData
      * @param Email $email
      * @param StoreManagerInterface $storeManager
@@ -82,6 +90,7 @@ class Manually
      * @param State $state
      * @param Registry $registry
      * @param LoggerInterface $logger
+     * @param OrderManagementInterface $orderManagement
      */
     public function __construct(
         HelperData $helperData,
@@ -90,22 +99,25 @@ class Manually
         OrderRepository $orderRepository,
         state $state,
         Registry $registry,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        OrderManagementInterface $orderManagement
     ) {
-        $this->_helperData = $helperData;
-        $this->_email = $email;
-        $this->_storeManager = $storeManager;
-        $this->orderRepository = $orderRepository;
-        $this->state = $state;
-        $this->registry = $registry;
-        $this->logger = $logger;
+        $this->_helperData      = $helperData;
+        $this->_email           = $email;
+        $this->_storeManager    = $storeManager;
+        $this->orderRepository  = $orderRepository;
+        $this->state            = $state;
+        $this->registry         = $registry;
+        $this->logger           = $logger;
+        $this->_orderManagement = $orderManagement;
     }
 
     /**
-     * action cron send email
+     * @throws LocalizedException
      */
     public function process()
     {
+        $status = ['processing', 'pending', 'fraud'];
         foreach ($this->_storeManager->getStores() as $store) {
             $storeId = $store->getId();
             if (!$this->_helperData->isEnabled($storeId)) {
@@ -116,12 +128,21 @@ class Manually
             if ($numOfOrders = $orderCollection->getSize()) {
                 $this->registry->unregister('isSecureArea');
                 $this->registry->register('isSecureArea', true);
-
                 $errorOrders = [];
+
                 foreach ($orderCollection->getItems() as $order) {
                     try {
+                        if ($this->_helperData->versionCompare('2.3.0')) {
+                            if (in_array($order->getStatus(), $status, true)) {
+                                $this->_orderManagement->cancel($order->getId());
+                            }
+                            if ($order->getStatus() === 'holded') {
+                                $this->_orderManagement->unHold($order->getId());
+                                $this->_orderManagement->cancel($order->getId());
+                            }
+                        }
                         $this->orderRepository->delete($order);
-                        $this->_helperData->deleteRecord(reset($orderIds));
+                        $this->_helperData->deleteRecord($order->getId());
                     } catch (Exception $e) {
                         $errorOrders[$order->getId()] = $order->getIncrementId();
                         $this->logger->error($e->getMessage());
@@ -136,7 +157,7 @@ class Manually
                     $templateParams = [
                         'num_order'     => $numOfOrders,
                         'success_order' => $numOfOrders - count($errorOrders),
-                        'error_order'   => $errorOrders
+                        'error_order'   => count($errorOrders)
                     ];
 
                     $this->_email->sendEmailTemplate($templateParams, $storeId);
