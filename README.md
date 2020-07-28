@@ -13,6 +13,7 @@
 [![Latest Stable Version](https://poser.pugx.org/mageplaza/module-delete-orders/v/stable)](https://packagist.org/packages/mageplaza/module-delete-orders)
 [![Total Downloads](https://poser.pugx.org/mageplaza/module-delete-orders/downloads)](https://packagist.org/packages/mageplaza/module-delete-orders)
 
+**IMPORTANT NOTE:** This version of Mageplaza Delete Orders extension on Github is free as a contribution to the Magento community from Mageplaza. This package does not include the technical support. Should you need technical support for this extension, you will have to buy a license from Mageplaza. [Click here to buy](https://www.mageplaza.com/magento-2-delete-orders/).
 
 ## 1. Documentation
 
