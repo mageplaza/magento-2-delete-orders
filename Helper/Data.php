@@ -34,6 +34,7 @@ use Mageplaza\DeleteOrders\Model\Config\Source\Country;
 
 /**
  * Class Data
+ *
  * @package Mageplaza\DeleteOrders\Helper
  */
 class Data extends AbstractData
@@ -50,10 +51,11 @@ class Data extends AbstractData
     /**
      * Data constructor.
      *
-     * @param Context $context
+     * @param Context                $context
      * @param ObjectManagerInterface $objectManager
-     * @param StoreManagerInterface $storeManager
-     * @param OrderFactory $orderResourceFactory
+     * @param StoreManagerInterface  $storeManager
+     * @param CollectionFactory      $orderCollectionFactory
+     * @param OrderFactory           $orderResourceFactory
      */
     public function __construct(
         Context $context,
@@ -72,7 +74,7 @@ class Data extends AbstractData
      * Get order collection which matching the delete config condition
      *
      * @param null $storeId
-     * @param int $limit
+     * @param int  $limit
      *
      * @return Collection
      */
@@ -83,7 +85,7 @@ class Data extends AbstractData
             ->addFieldToFilter('customer_group_id', ['in' => $this->getOrderCustomerGroupConfig($storeId)]);
 
         $storeIds = $this->getStoreViewConfig($storeId);
-        if (!in_array(Store::DEFAULT_STORE_ID, $storeIds, true)) {
+        if (!in_array(Store::DEFAULT_STORE_ID, $storeIds)) {
             $orderCollection->addFieldToFilter('store_id', ['in' => $storeIds]);
         }
 
@@ -223,7 +225,7 @@ class Data extends AbstractData
 
     /**
      * @param       $code
-     * @param null $storeId
+     * @param null  $storeId
      *
      * @return mixed
      */
