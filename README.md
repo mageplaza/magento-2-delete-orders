@@ -1,6 +1,6 @@
 # Magento 2 Delete Orders extension Free
 
-**Magento 2 Delete Orders** by Mageplaza helps admins completely remove unnecessary orders, invoices, shipments and credit memos which are arised during testing process. This helps simplify order management and get these arranged neater.
+**[Magento 2 Delete Orders](https://www.mageplaza.com/magento-2-delete-orders/)** by Mageplaza helps admins completely remove unnecessary orders, invoices, shipments and credit memos which are arised during testing process. This helps simplify order management and get these arranged neater.
 
 
 ## Highlight features
@@ -13,7 +13,7 @@
 [![Latest Stable Version](https://poser.pugx.org/mageplaza/module-delete-orders/v/stable)](https://packagist.org/packages/mageplaza/module-delete-orders)
 [![Total Downloads](https://poser.pugx.org/mageplaza/module-delete-orders/downloads)](https://packagist.org/packages/mageplaza/module-delete-orders)
 
-**IMPORTANT NOTE:** This version of Mageplaza Delete Orders extension on Github is free as a contribution to the Magento community from Mageplaza. This package does not include the technical support. Should you need technical support for this extension, you will have to buy a license from Mageplaza. [Click here to buy](https://www.mageplaza.com/magento-2-delete-orders/).
+**IMPORTANT NOTE:** This version of Magento 2 Delete Orders extension on Github is free as a contribution to the Magento community from Mageplaza. This package does not include the technical support. Should you need technical support for this extension, you will have to buy a license from Mageplaza. [Click here to buy](https://www.mageplaza.com/magento-2-delete-orders/).
 
 ## 1. Documentation
 
@@ -81,7 +81,7 @@ While deleting orders, invoices, shipments and credit memos, their related data 
 - The module supports multi stores
 - Multiple languages are supported
 - It’s easy to customize
-- Mageplaza provides a well-documented user guide for Delete Orders extension
+- Mageplaza provides a well-documented user guide for Magento 2 Delete Orders extension
 
 **People also search:**
 - magento 2 delete order
