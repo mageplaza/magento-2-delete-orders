@@ -1,4 +1,4 @@
-# Magento 2 Delete Orders free by Mageplaza
+# Magento 2 Delete Orders extension Free
 
 **Magento 2 Delete Orders** by Mageplaza helps admins completely remove unnecessary orders, invoices, shipments and credit memos which are arised during testing process. This helps simplify order management and get these arranged neater.
 
@@ -31,7 +31,7 @@
 A: Read solution: https://github.com/mageplaza/module-core/issues/3
 
 
-## 3. How to install
+## 3. How to install Magento 2 Delete Orders
 
 
 ## ✓ Install via composer (recommend)
@@ -44,13 +44,13 @@ php bin/magento setup:static-content:deploy
 ```
 
 
-## 4. Problems & Solutions
+## 4. Magento 2 Delete Orders: Problems & Solutions
 
 Before applying any new changes in an online store, store admins have to carry quite many tests. This testing process can arise a number of orders, invoices, shipments and credit memos which are obviously unnecessary in long term and they can cause difficulties in management. Unfortunately, default Magento 2 doesn’t support any functionalities to remove them from the backend. This consequently causes frustration and inconvenience in administration.
 
 There should be a way to deal with this problem, Mageplaza Delete Orders extension is developed to help store admins simplify this task. The module helps delete orders, invoices, shipments and credit memos from the backend but keeps the retire data safe. The job can be done in the blink of an eye with mass deleting feature and ability to delete all.
 
-## 5. Why online stores must have Mageplaza Delete Orders
+## 5. Why online stores must have Mageplaza's Delete Orders
 
 ### To keep the backend well-arranged and neat
 The appearance of test orders makes a store’s backend look like a mess. Thus cuts in unnecessary orders, shipments, invoices and credit memos created for testing will make everything neater, easier to follow and less confusing.
@@ -59,7 +59,7 @@ The appearance of test orders makes a store’s backend look like a mess. Thus c
 The large number of test orders can confuse store admins and this can cause inconvenience or mistakes in managing. Having a neater backend will simplify order management.
 
 
-## 6. Features
+## 6. Magento 2 Delete Orders Features
 
 ![magento 2 delete orders](https://cdn.mageplaza.com/media/general/GKcj6HQ.png)
 
@@ -104,3 +104,18 @@ While deleting orders, invoices, shipments and credit memos, their related data 
 - [Magento 2 blog extension](https://github.com/mageplaza/magento-2-blog)
 - [Magento 2 Ajax Layered Navigation](https://github.com/mageplaza/magento-2-ajax-layered-navigation)
 - [Magento 2 security](https://github.com/mageplaza/magento-2-security)
+
+
+**Get more [Magento 2 extension on Marketplace](https://marketplace.magento.com/partner/Mageplaza):**
+- [Magento 2 OneStepCheckout](https://marketplace.magento.com/mageplaza-magento-2-one-step-checkout-extension.html)
+- [Magento 2 Payment Restriction](https://marketplace.magento.com/mageplaza-module-payment-restriction.html)
+- [Magento 2 Frequently Bought Together](https://marketplace.magento.com/mageplaza-module-frequently-bought-together.html)
+- [Magento 2 Shipping Rules](https://marketplace.magento.com/mageplaza-module-shipping-rules.html)
+- [Magento 2 Abandoned Cart Email](https://marketplace.magento.com/mageplaza-module-abandoned-cart-email.html)
+- [Magento 2 SMTP](https://marketplace.magento.com/mageplaza-module-smtp.html)
+- [Magento 2 Shipping Restrictions](https://marketplace.magento.com/mageplaza-module-shipping-restriction.html)
+- [Magento 2 Gift Card](https://marketplace.magento.com/mageplaza-module-gift-card.html)
+- [Magento 2 Order Attributes](https://marketplace.magento.com/mageplaza-module-order-attributes.html)
+- [Magento 2 Layer Navitaion](https://marketplace.magento.com/mageplaza-layered-navigation-m2.html)
+- [Magento 2 SEO All-in-one](https://marketplace.magento.com/mageplaza-magento-2-seo-extension.html)
+
