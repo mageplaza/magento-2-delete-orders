@@ -36,7 +36,7 @@
             </group>
             <group id="schedule" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                 <label>Automatic Delete Configuration</label>
-                <field id="schedule_for" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="frequency" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Schedule For</label>
                     <source_model>Mageplaza\DeleteOrders\Model\Config\Source\Frequency</source_model>
                     <backend_model>Mageplaza\DeleteOrders\Model\Config\Backend\Order\Frequency</backend_model>
@@ -45,7 +45,7 @@
                 <field id="time" translate="label" type="time" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Start Time</label>
                     <depends>
-                        <field id="schedule_for" separator="|">D|W|M</field>
+                        <field id="frequency" separator="|">D|W|M</field>
                     </depends>
                 </field>
                 <field id="day_before" translate="label comment" sortOrder="20" type="text" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">

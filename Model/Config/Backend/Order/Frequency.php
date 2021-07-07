@@ -111,9 +111,9 @@ class Frequency extends Value
     public function afterSave()
     {
         $time      = $this->getData('groups/schedule/fields/time/value');
-        $frequency = (int) $this->getData('groups/schedule/fields/schedule_for/value');
+        $frequency = $this->getData('groups/schedule/fields/frequency/value');
 
-        if ($frequency !== ValueConfig::DISABLE) {
+        if ($frequency != (string)ValueConfig::DISABLE) {
             $cronExprArray = [
                 (int) $time[1], //Minute
                 (int) $time[0], //Hour

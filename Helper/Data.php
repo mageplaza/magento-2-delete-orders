@@ -88,7 +88,7 @@ class Data extends AbstractData
         }
 
         if ($total = $this->getOrderTotalConfig($storeId)) {
-            $orderCollection->addFieldToFilter('grand_total', ['lteq' => $total]);
+            $orderCollection->addFieldToFilter('base_grand_total', ['lteq' => $total]);
         }
 
         if ($dayBefore = $this->getPeriodConfig($storeId)) {
