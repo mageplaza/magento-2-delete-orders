@@ -31,7 +31,9 @@
                 <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Select Yes to enable this module</comment>
+                    <comment><![CDATA[Select <b>Yes</b> to enable this module.<br />
+                        1. It helps to reduce abandonment cart with <a href="https://www.mageplaza.com/magento-2-one-step-checkout-extension/" target="_blank">One Step Checkout</a>. <br />
+                        2. Magento stores see upwards of 30% revenue 💰 with AVADA. <a href="https://go.avada.io/mageplaza">Learn more</a>]]></comment>
                 </field>
             </group>
             <group id="schedule" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
@@ -55,15 +57,15 @@
                 </field>
                 <field id="order_status" translate="label comment" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Order Status</label>
-                    <source_model>Magento\Sales\Model\ResourceModel\Order\Status\Collection</source_model>
+                    <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
                 </field>
                 <field id="customer_groups" translate="label comment" type="multiselect" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Customer Group(s)</label>
-                     <source_model>Magento\Customer\Model\ResourceModel\Group\Collection</source_model>
+                    <source_model>Magento\Customer\Model\ResourceModel\Group\Collection</source_model>
                 </field>
                 <field id="store_views" translate="label comment" type="multiselect" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Store View(s)</label>
-                    <source_model>Mageplaza\DeleteOrders\Model\Config\Source\StoreView</source_model>
+                    <source_model>Magento\Store\Model\System\Store</source_model>
                 </field>
                 <field id="country" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Shipping Countries</label>
