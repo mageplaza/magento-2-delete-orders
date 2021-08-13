@@ -57,7 +57,7 @@
                 </field>
                 <field id="order_status" translate="label comment" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Order Status</label>
-                    <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+                    <source_model>Magento\Sales\Model\ResourceModel\Order\Status\Collection</source_model>
                 </field>
                 <field id="customer_groups" translate="label comment" type="multiselect" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Customer Group(s)</label>
@@ -65,7 +65,7 @@
                 </field>
                 <field id="store_views" translate="label comment" type="multiselect" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Store View(s)</label>
-                    <source_model>Magento\Store\Model\System\Store</source_model>
+                    <source_model>Mageplaza\DeleteOrders\Model\Config\Source\StoreView</source_model>
                 </field>
                 <field id="country" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Shipping Countries</label>
