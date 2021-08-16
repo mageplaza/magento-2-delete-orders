@@ -67,16 +67,16 @@ class Frequency extends Value
     /**
      * Frequency constructor.
      *
-     * @param Context               $context
-     * @param Registry              $registry
-     * @param ScopeConfigInterface  $config
-     * @param TypeListInterface     $cacheTypeList
-     * @param ValueFactory          $configValueFactory
-     * @param ManagerInterface      $messageManager
+     * @param Context $context
+     * @param Registry $registry
+     * @param ScopeConfigInterface $config
+     * @param TypeListInterface $cacheTypeList
+     * @param ValueFactory $configValueFactory
+     * @param ManagerInterface $messageManager
      * @param AbstractResource|null $resource
-     * @param AbstractDb|null       $resourceCollection
-     * @param string                $runModelPath
-     * @param array                 $data
+     * @param AbstractDb|null $resourceCollection
+     * @param string $runModelPath
+     * @param array $data
      */
     public function __construct(
         Context $context,
@@ -111,16 +111,12 @@ class Frequency extends Value
     public function afterSave()
     {
         $time      = $this->getData('groups/schedule/fields/time/value');
-        $frequency = $this->getData('groups/schedule/fields/schedule_for/value');
+        $frequency = $this->getData('groups/schedule/fields/frequency/value');
 
-        if (!$frequency) {
-            return parent::afterSave();
-        }
-
-        if ($frequency !== ValueConfig::DISABLE) {
+        if ($frequency != (string)ValueConfig::DISABLE) {
             $cronExprArray = [
-                (int)$time[1], //Minute
-                (int)$time[0], //Hour
+                (int) $time[1], //Minute
+                (int) $time[0], //Hour
                 $frequency === \Magento\Cron\Model\Config\Source\Frequency::CRON_MONTHLY ? '1' : '*', //Day of the Month
                 '*', //Month of the Year
                 $frequency === \Magento\Cron\Model\Config\Source\Frequency::CRON_WEEKLY ? '1' : '*', //Day of the Week

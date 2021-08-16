@@ -34,7 +34,6 @@ use Mageplaza\DeleteOrders\Model\Config\Source\Country;
 
 /**
  * Class Data
- *
  * @package Mageplaza\DeleteOrders\Helper
  */
 class Data extends AbstractData
@@ -51,11 +50,10 @@ class Data extends AbstractData
     /**
      * Data constructor.
      *
-     * @param Context                $context
+     * @param Context $context
      * @param ObjectManagerInterface $objectManager
-     * @param StoreManagerInterface  $storeManager
-     * @param CollectionFactory      $orderCollectionFactory
-     * @param OrderFactory           $orderResourceFactory
+     * @param StoreManagerInterface $storeManager
+     * @param OrderFactory $orderResourceFactory
      */
     public function __construct(
         Context $context,
@@ -74,7 +72,7 @@ class Data extends AbstractData
      * Get order collection which matching the delete config condition
      *
      * @param null $storeId
-     * @param int  $limit
+     * @param int $limit
      *
      * @return Collection
      */
@@ -85,12 +83,12 @@ class Data extends AbstractData
             ->addFieldToFilter('customer_group_id', ['in' => $this->getOrderCustomerGroupConfig($storeId)]);
 
         $storeIds = $this->getStoreViewConfig($storeId);
-        if (!in_array(Store::DEFAULT_STORE_ID, $storeIds)) {
+        if (!in_array(Store::DEFAULT_STORE_ID, $storeIds, true)) {
             $orderCollection->addFieldToFilter('store_id', ['in' => $storeIds]);
         }
 
         if ($total = $this->getOrderTotalConfig($storeId)) {
-            $orderCollection->addFieldToFilter('grand_total', ['lteq' => $total]);
+            $orderCollection->addFieldToFilter('base_grand_total', ['lteq' => $total]);
         }
 
         if ($dayBefore = $this->getPeriodConfig($storeId)) {
@@ -108,8 +106,7 @@ class Data extends AbstractData
                     'main_table.entity_id = soa.parent_id',
                     []
                 )
-                ->where('soa.country_id IN (?)', $this->getCountriesConfig($storeId))
-                ->where('soa.address_type IN (?)', 'shipping');
+                ->where('soa.country_id IN (?)', $this->getCountriesConfig($storeId));
         }
 
         return $orderCollection;
@@ -225,7 +222,7 @@ class Data extends AbstractData
 
     /**
      * @param       $code
-     * @param null  $storeId
+     * @param null $storeId
      *
      * @return mixed
      */

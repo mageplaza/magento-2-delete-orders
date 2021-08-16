@@ -27,4 +27,7 @@
     <type name="Magento\Ui\Component\MassAction">
         <plugin name="delete_order_add_massaction_delete" type="Mageplaza\DeleteOrders\Plugin\Order\AddDeleteAction"/>
     </type>
+    <type name="Magento\Sales\Model\Order">
+        <plugin name="delete_order_hold_on" type="Mageplaza\DeleteOrders\Plugin\Model\Order"/>
+    </type>
 </config>
