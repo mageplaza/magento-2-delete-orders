@@ -29,7 +29,7 @@
                 <enabled>1</enabled>
             </general>
             <schedule>
-                <schedule_for>0</schedule_for>
+                <frequency>0</frequency>
                 <order_status>0</order_status>
                 <store_views>0</store_views>
                 <country>2</country>
