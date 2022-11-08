@@ -167,7 +167,7 @@ class Data extends AbstractData
      */
     public function getOrderCustomerGroupConfig($storeId = null)
     {
-        return explode(',', $this->getScheduleConfig('customer_groups', $storeId));
+        return explode(',', (string)$this->getScheduleConfig('customer_groups', $storeId));
     }
 
     /**
