@@ -106,7 +106,8 @@ class Data extends AbstractData
                     'main_table.entity_id = soa.parent_id',
                     []
                 )
-                ->where('soa.country_id IN (?)', $this->getCountriesConfig($storeId));
+                ->where('soa.country_id IN (?)', $this->getCountriesConfig($storeId))
+                ->where('soa.address_type IN (?)', 'shipping');
         }
 
         return $orderCollection;
