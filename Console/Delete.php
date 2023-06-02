@@ -120,6 +120,7 @@ class Delete extends Command
             $this->_helperData->deleteRecord($orderId);
 
             $output->writeln('<info>The delete order process has been successful!</info>');
+            return 0;
         } catch (Exception $e) {
             $output->writeln("<error>{$e->getMessage()}</error>");
         }
