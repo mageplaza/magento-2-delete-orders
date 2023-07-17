@@ -106,7 +106,8 @@ class Data extends AbstractData
                     'main_table.entity_id = soa.parent_id',
                     []
                 )
-                ->where('soa.country_id IN (?)', $this->getCountriesConfig($storeId));
+                ->where('soa.country_id IN (?)', $this->getCountriesConfig($storeId))
+                ->where('soa.address_type IN (?)', 'shipping');
         }
 
         return $orderCollection;
@@ -167,7 +168,7 @@ class Data extends AbstractData
      */
     public function getOrderCustomerGroupConfig($storeId = null)
     {
-        return explode(',', $this->getScheduleConfig('customer_groups', $storeId));
+        return explode(',', (string)$this->getScheduleConfig('customer_groups', $storeId));
     }
 
     /**
