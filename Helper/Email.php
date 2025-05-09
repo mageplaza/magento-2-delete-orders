@@ -78,7 +78,7 @@ class Email extends AbstractData
      *
      * @return $this
      */
-    public function sendEmailTemplate($templateParams = [], $storeId = null)
+    public function sendEmailTemplate($templateParams = [], ?$storeId = null)
     {
         try {
             $toEmails = $this->getToEmail($storeId);
@@ -108,7 +108,7 @@ class Email extends AbstractData
      *
      * @return mixed
      */
-    public function getConfigEmail($code = '', $storeId = null)
+    public function getConfigEmail($code = '', ?$storeId = null)
     {
         $code = ($code !== '') ? '/' . $code : '';
 
@@ -120,7 +120,7 @@ class Email extends AbstractData
      *
      * @return bool
      */
-    public function isEnabledEmail($storeId = null)
+    public function isEnabledEmail(?$storeId = null)
     {
         if ($this->_helperData->isEnabled()) {
             return (bool) $this->getConfigEmail('enabled', $storeId);
@@ -134,7 +134,7 @@ class Email extends AbstractData
      *
      * @return string
      */
-    public function getSender($storeId = null)
+    public function getSender(?$storeId = null)
     {
         return $this->getConfigEmail('sender', $storeId);
     }
@@ -144,7 +144,7 @@ class Email extends AbstractData
      *
      * @return string
      */
-    public function getTemplate($storeId = null)
+    public function getTemplate(?$storeId = null)
     {
         return $this->getConfigEmail('template', $storeId);
     }
@@ -154,7 +154,7 @@ class Email extends AbstractData
      *
      * @return array
      */
-    public function getToEmail($storeId = null)
+    public function getToEmail(?$storeId = null)
     {
         return explode(',', $this->getConfigEmail('to', $storeId));
     }

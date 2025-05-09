@@ -75,7 +75,7 @@ class Delete extends Command
         OrderRepository $orderRepository,
         state $state,
         Registry $registry,
-        $name = null
+        ?$name = null
     ) {
         $this->_helperData     = $helperData;
         $this->orderRepository = $orderRepository;

@@ -85,8 +85,8 @@ class Frequency extends Value
         TypeListInterface $cacheTypeList,
         ValueFactory $configValueFactory,
         ManagerInterface $messageManager,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
         $runModelPath = '',
         array $data = []
     ) {
