@@ -76,7 +76,7 @@ class Data extends AbstractData
      *
      * @return Collection
      */
-    public function getMatchingOrders($storeId = null, $limit = 1000)
+    public function getMatchingOrders(?$storeId = null, $limit = 1000)
     {
         $orderCollection = $this->orderCollectionFactory->create()
             ->addFieldToFilter('status', ['in' => $this->getOrderStatusConfig($storeId)])
@@ -156,7 +156,7 @@ class Data extends AbstractData
      *
      * @return mixed
      */
-    public function getOrderStatusConfig($storeId = null)
+    public function getOrderStatusConfig(?$storeId = null)
     {
         return explode(',', $this->getScheduleConfig('order_status', $storeId));
     }
@@ -166,7 +166,7 @@ class Data extends AbstractData
      *
      * @return mixed
      */
-    public function getOrderCustomerGroupConfig($storeId = null)
+    public function getOrderCustomerGroupConfig(?$storeId = null)
     {
         return explode(',', (string)$this->getScheduleConfig('customer_groups', $storeId));
     }
@@ -176,7 +176,7 @@ class Data extends AbstractData
      *
      * @return array
      */
-    public function getStoreViewConfig($storeId = null)
+    public function getStoreViewConfig(?$storeId = null)
     {
         return explode(',', $this->getScheduleConfig('store_views', $storeId));
     }
@@ -186,7 +186,7 @@ class Data extends AbstractData
      *
      * @return mixed
      */
-    public function getShippingCountryType($storeId = null)
+    public function getShippingCountryType(?$storeId = null)
     {
         return $this->getScheduleConfig('country', $storeId);
     }
@@ -196,7 +196,7 @@ class Data extends AbstractData
      *
      * @return array
      */
-    public function getCountriesConfig($storeId = null)
+    public function getCountriesConfig(?$storeId = null)
     {
         return explode(',', $this->getScheduleConfig('specific_country', $storeId));
     }
@@ -206,7 +206,7 @@ class Data extends AbstractData
      *
      * @return mixed
      */
-    public function getOrderTotalConfig($storeId = null)
+    public function getOrderTotalConfig(?$storeId = null)
     {
         return $this->getScheduleConfig('order_under', $storeId);
     }
@@ -216,7 +216,7 @@ class Data extends AbstractData
      *
      * @return mixed
      */
-    public function getPeriodConfig($storeId = null)
+    public function getPeriodConfig(?$storeId = null)
     {
         return $this->getScheduleConfig('day_before', $storeId);
     }
@@ -227,7 +227,7 @@ class Data extends AbstractData
      *
      * @return mixed
      */
-    public function getScheduleConfig($code, $storeId = null)
+    public function getScheduleConfig($code, ?$storeId = null)
     {
         return $this->getModuleConfig('schedule/' . $code, $storeId);
     }
