@@ -24,6 +24,7 @@
         <delete_orders>
             <module>
                 <type>1</type>
+                <user_guide>magento/delete-orders</user_guide>
             </module>
             <general>
                 <enabled>1</enabled>
