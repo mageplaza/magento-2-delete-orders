@@ -100,12 +100,12 @@ class Delete extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$this->_helperData->isEnabled()) {
             $output->writeln('<error>Please enable the module.</error>');
 
-            return;
+            return Command::FAILURE;
         }
 
         $this->state->setAreaCode(Area::AREA_ADMINHTML);
@@ -120,9 +120,12 @@ class Delete extends Command
             $this->_helperData->deleteRecord($orderId);
 
             $output->writeln('<info>The delete order process has been successful!</info>');
-            return 0;
+
+            return Command::SUCCESS;
         } catch (Exception $e) {
             $output->writeln("<error>{$e->getMessage()}</error>");
+
+            return Command::FAILURE;
         }
     }
 }
