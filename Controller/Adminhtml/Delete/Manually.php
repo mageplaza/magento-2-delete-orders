@@ -41,6 +41,8 @@ use Psr\Log\LoggerInterface;
  */
 class Manually extends Action
 {
+    const ADMIN_RESOURCE = 'Magento_Sales::delete';
+
     /**
      * @var HelperData
      */
