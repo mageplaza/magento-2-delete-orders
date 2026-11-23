@@ -24,7 +24,7 @@ use Mageplaza\DeleteOrders\Block\Adminhtml\System\Config\Manually;
 /** @var Manually $block */ ?>
 
 <button id="mpdeleteorders_run_manually" title="Run Manually" type="button" class="primary">
-    <span><?= __('Run Manually') ?></span>
+    <span><?= $block->escapeHtml(__('Run Manually')) ?></span>
     </span></button>
 <div class="mpdeleteorders_popup_confirm"></div>
 
@@ -46,7 +46,7 @@ use Mageplaza\DeleteOrders\Block\Adminhtml\System\Config\Manually;
                 actions: {
                     /** @inheritdoc */
                     confirm: function () {
-                        window.location.href = "<?= $block->getUrl('sales/delete/manually', ['_current' => true, '_use_rewrite' => true]) ?>";
+                        window.location.href = "<?= $block->escapeJs($block->getUrl('sales/delete/manually', ['_current' => true, '_use_rewrite' => true])) ?>";
                     }
                 }
             });
